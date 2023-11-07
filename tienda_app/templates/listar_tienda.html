@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Listar Tiendas</h1>
+  <table>
+    <tr>
+      <th>Nombre</th>
+      <th>Dirección</th>
+      <th>Correo</th>
+      <th>Teléfono</th>
+      <th>Encargado</th>
+      <th>Provincia</th>
+      <th>Acciones</th>
+    </tr>
+    {% for tienda in tiendas %}
+      <tr>
+        <td>{{ tienda.nombre }}</td>
+        <td>{{ tienda.direccion }}</td>
+        <td>{{ tienda.correo }}</td>
+        <td>{{ tienda.telefono }}</td>
+        <td>{{ tienda.encargado }}</td>
+        <td>{{ tienda.provincia }}</td>
+        <td>
+          <a href="{% url 'editar_tienda' tienda.id %}">Editar</a>
+          <a href="{% url 'eliminar_tienda' tienda.id %}">Eliminar</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
