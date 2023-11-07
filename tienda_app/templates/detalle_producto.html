@@ -34,9 +34,10 @@
       </a>
     </div>
     <div class="col-md-8">
-      <h2>Título del producto</h2>
-      <p>Precio: $XX</p>
-      <p>Descripción del producto</p>
+      <h2>{{ producto.nombreProducto }}</h2>
+      <p>Precio: ${{ producto.precio }}</p>
+      <p>Unidad: {{ producto.unidad }}</p>
+      <p>{{ producto.descripcion }}</p>
       <div class="rating">
         <span class="star"></span>
         <span class="star"></span>

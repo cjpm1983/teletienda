@@ -116,8 +116,8 @@
                 </a>
               </div>
               <div class="card-body">
-
-                <div class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ producto.rating_average|default_if_none:"0" }}"></div>
+                
+                <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ producto.rating_average|default_if_none:"0" }}"></div>
                 <p id="rating_value_{{ producto.id }}"></p>
             
                 <script>
@@ -137,7 +137,7 @@
 
                 <a href="" class="text-reset">
                   <h5 class="card-title mb-2">{{ producto.nombreProducto }} </h5>
-                  <h6>{{ producto.unidad }}</h6>
+                  <h6>Unidad: {{ producto.unidad }}</h6>
                 </a>
                 <a href="" class="text-reset ">
                   <p>{{ producto.tienda }} - {{ producto.descripcion |truncatewords:50 }}</p>
