@@ -8,12 +8,18 @@ from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import viewsets
 from .models import Tienda, Producto
 from .forms import TiendaForm, ProductoForm
+from django.contrib.auth.forms import UserCreationForm
 
 from .serializers import TiendaSerializer, ProductoSerializer
 
 
 from django.core.paginator import Paginator, EmptyPage
 
+
+from django.core.mail import send_mail
+from django.conf import settings
+
+from django.contrib.auth.decorators import login_required
 
 def crear_tienda(request):
     if request.method == 'POST':
@@ -26,6 +32,7 @@ def crear_tienda(request):
     return render(request, 'crear_tienda.html', {'form': form})
 
 def editar_tienda(request, tienda_id):
+   
     tienda = get_object_or_404(Tienda, pk=tienda_id)
     if request.method == 'POST':
         form = TiendaForm(request.POST, instance=tienda)
@@ -106,6 +113,61 @@ def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
     return render(request, 'detalle_producto.html', {'producto': producto})
 
+from .forms import CustomUserCreationForm
+from .models import UserProfile
+from .forms import ProfileForm
+
+
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user.userprofile)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_producto')
+    else:
+        form = ProfileForm(instance=request.user.userprofile)
+    return render(request, 'registration/edit_profile.html', {'form': form})
+
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+
+            user_profile = UserProfile.objects.create(user=user)
+
+            current_site = get_current_site(request)
+            mail_subject = 'Activa tu cuenta'
+            message = render_to_string('registration/activation_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            email_from = 'noreply@teletienda.com'  # Reemplaza con tu dirección de correo electrónico
+            recipient_list = [user.email]
+            email = EmailMessage(mail_subject, message, email_from, recipient_list)
+            email.send()
+
+            return redirect('login')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+@login_required
+def profile(request):
+    return render(request, 'registration/profile.html')
+
+from django.contrib.auth import logout
+
+def milogout_view(request):
+    logout(request)
+    return redirect('logout') 
+
 class TiendaViewSet(viewsets.ModelViewSet):
     queryset = Tienda.objects.all()
     serializer_class = TiendaSerializer
@@ -114,79 +176,6 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
   
-
-'''
-from django.shortcuts import rendct_or_404, redirect
-from .models import Tienda, Productoer, get_obje
-from .forms import TiendaForm, ProductoForm
-
-def listar_tiendas(request):
-    tiendas = Tienda.objects.all()
-    return render(request, 'listar_tiendas.html', {'tiendas': tiendas})
-
-def detalle_tienda(request, tienda_id):
-    tienda = get_object_or_404(Tienda, id=tienda_id)
-    productos = Producto.objects.filter(tienda=tienda)
-    return render(request, 'detalle_tienda.html', {'tienda': tienda, 'productos': productos})
-
-def crear_tienda(request):
-    if request.method == 'POST':
-        form = TiendaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_tienda')
-    else:
-        form = TiendaForm()
-    return render(request, 'crear_tienda.html', {'form': form})
-
-def editar_tienda(request, tienda_id):
-    tienda = get_object_or_404(Tienda, id=tienda_id)
-    if request.method == 'POST':
-        form = TiendaForm(request.POST, instance=tienda)
-        if form.is_valid():
-            form.save()
-            return redirect('detalle_tienda', tienda_id=tienda_id)
-    else:
-        form = TiendaForm(instance=tienda)
-    return render(request, 'editar_tienda.html', {'form': form, 'tienda': tienda})
-
-def eliminar_tienda(request, tienda_id):
-    tienda = get_object_or_404(Tienda, id=tienda_id)
-    tienda.delete()
-    return redirect('lista_tiendas')
-
-def crear_producto(request, tienda_id):
-    tienda = get_object_or_404(Tienda, id=tienda_id)
-    if request.method == 'POST':
-        form = ProductoForm(request.POST, request.FILES)
-        if form.is_valid():
-            producto = form.save(commit=False)
-            producto.tienda = tienda
-            producto.save()
-            return redirect('detalle_tienda', tienda_id=tienda_id)
-    else:
-        form = ProductoForm()
-    return render(request, 'crear_producto.html', {'form': form, 'tienda': tienda})
-
-def editar_producto(request, tienda_id, producto_id):
-    tienda = get_object_or_404(Tienda, id=tienda_id)
-    producto = get_object_or_404(Producto, id=producto_id, tienda=tienda)
-    if request.method == 'POST':
-        form = ProductoForm(request.POST, request.FILES, instance=producto)
-        if form.is_valid():
-            form.save()
-            return redirect('detalle_tienda', tienda_id=tienda_id)
-    else:
-        form = ProductoForm(instance=producto)
-    return render(request, 'editar_producto.html', {'form': form, 'tienda': tienda, 'producto': producto})
-
-def eliminar_producto(request, tienda_id, producto_id):
-    tienda = get_object_or_404(Tienda, id=tienda_id)
-    producto = get_object_or_404(Producto, id=producto_id, tienda=tienda)
-    producto.delete()
-    return redirect('detalle_tienda', tienda_id=tienda_id)
-
-'''
 
 #Utils
 def get_new_image_dimensions(
@@ -217,3 +206,42 @@ def resize_image(original_image: Image, width: int) -> Image:
 class ImageWidth:
     THUMBNAIL = 150
     LARGE = 1100
+
+
+
+def confirmEmail(request):    
+    subject = 'Teletienda: Confirmación de Registro'
+    message = ' Para confirmar su registro, por favor haga click en el siguiente enlace \
+    <a href=#>Confirmar registro</a> '
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = ['cjpm1983@gmail.com',]    
+    send_mail( subject, message, email_from, recipient_list )    
+    #return redirect('listar_tienda')
+
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.models import User
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return render(request, 'registration/activation_success.html')
+    else:
+        return render(request, 'registration/activation_failed.html')

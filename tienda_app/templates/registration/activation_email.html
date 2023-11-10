@@ -1,0 +1,14 @@
+{% load i18n %}
+
+{% autoescape off %}
+Hola {{ user.username }},
+
+Por favor, haz clic en el siguiente enlace para activar tu cuenta:
+
+{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Si no puedes hacer clic en el enlace, cópialo y pégalo en la barra de direcciones de tu navegador.
+
+Gracias,
+Equipo de {{ site_name }}
+{% endautoescape %}

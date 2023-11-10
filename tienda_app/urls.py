@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 from .views import TiendaViewSet, ProductoViewSet
+from django.contrib.auth import views as auth_views
 
 from . import views
 
@@ -21,4 +22,13 @@ urlpatterns = [
     path('eliminar_producto/<int:producto_id>/', views.eliminar_producto, name='eliminar_producto'),
     path('listar_producto/', views.listar_producto, name='listar_producto'),
     path('detalle_producto/<int:producto_id>/', views.detalle_producto, name='detalle_producto'),
+
+
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/register/', views.register, name='register'),
+    path('accounts/profile/', views.profile, name='profile'),
+    path('logout/', views.milogout_view, name='milogout'),
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
+    path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+
 ]

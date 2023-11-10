@@ -79,6 +79,30 @@
         </div>
     </form>
 
+ <!-- Dropdown -->
+ {% if user.is_authenticated %}
+ <div class="dropdown">
+   <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-mdb-toggle="dropdown"
+     aria-expanded="false">
+     {{ user.username|first|upper }}
+   </button>
+   <ul class="dropdown-menu" aria-labelledby="userDropdown">
+     <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
+     <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
+   </ul>
+ </div>
+{% else %}
+ <div class="dropdown">
+   <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
+     aria-expanded="false">
+     Registro
+   </button>
+   <ul class="dropdown-menu" aria-labelledby="registerDropdown">
+     <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
+     <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
+   </ul>
+ </div>
+{% endif %}
 
     </div>
   </div>

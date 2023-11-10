@@ -37,6 +37,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     telegram_username = models.CharField(max_length=50,blank=True)
     uri_token = models.CharField(max_length=255,blank=True)
+    confirmation_token = models.CharField(max_length=255, blank=True)
+
 
 class Rating(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
