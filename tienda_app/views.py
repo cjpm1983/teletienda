@@ -61,7 +61,7 @@ def crear_producto(request):
             #producto = form.save()
             post: Post = form.save(commit=False)
             if post.foto:
-                img: Image = utils.resize_image(
+                img: Image = resize_image(
                     post.foto, ImageWidth.THUMBNAIL
                 )
                 img.save(post.foto.path)
@@ -80,7 +80,7 @@ def editar_producto(request, producto_id):
             #form.save()
             post: Post = form.save(commit=False)
             if post.foto:
-                img: Image = utils.resize_image(
+                img: Image = resize_image(
                     post.foto, ImageWidth.THUMBNAIL
                 )
                 img.save(post.foto.path)
@@ -195,6 +195,7 @@ def get_new_image_dimensions(
 def resize_image(original_image: Image, width: int) -> Image:
 
     image = Image.open(original_image)
+    image = image.convert('RGB')
 
     new_size = get_new_image_dimensions(image.size, width)
 
@@ -205,7 +206,7 @@ def resize_image(original_image: Image, width: int) -> Image:
 
 class ImageWidth:
     THUMBNAIL = 150
-    LARGE = 1100
+    LARGE = 150
 
 
 
