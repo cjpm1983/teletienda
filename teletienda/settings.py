@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+
+from .extra_settings.gmail import *
+from .extra_settings.webpush_settings import *
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -39,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tienda_app',
     'rest_framework',
+    'webpush',
 ]
 
 MIDDLEWARE = [
@@ -144,7 +149,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-from .gmail import *
+
 
 
 LOGGING = {
