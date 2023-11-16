@@ -28,6 +28,9 @@ from django.conf import settings
 
 from django.contrib.auth.decorators import login_required
 
+from django.http.response import HttpResponse
+from django.views.decorators.http import require_GET, require_POST
+
 def crear_tienda(request):
     if request.method == 'POST':
         form = TiendaForm(request.POST)
@@ -249,3 +252,9 @@ def activate(request, uidb64, token):
         return render(request, 'registration/activation_success.html')
     else:
         return render(request, 'registration/activation_failed.html')
+    
+from webpush import send_user_notification
+
+@require_GET
+def home(request):
+    return HttpResponse('<h1>Home Page<h1>')
