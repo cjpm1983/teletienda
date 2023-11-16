@@ -3,7 +3,8 @@ from typing import Tuple
 from PIL import Image
 
 import logging
-logger = logging.getLogger('tienda_app')
+logger = logging.getLogger('django')
+#logger = logging.getLogger('__name__')
 
 
 
@@ -66,17 +67,14 @@ def crear_producto(request):
         if form.is_valid():
             #producto = form.save()
             post: Post = form.save(commit=False)
-            if post.foto:
-                img: Image = resize_image(
-                    post.foto, ImageWidth.THUMBNAIL
-                )
-                img.save(post.foto.path)
-
+           
             post.save()
             return redirect('listar_producto')
     else:
         form = ProductoForm()
     return render(request, 'crear_producto.html', {'form': form})
+
+import os
 
 def editar_producto(request, producto_id):
     logger.info("Hello world")
@@ -85,14 +83,8 @@ def editar_producto(request, producto_id):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES, instance=producto)
         if form.is_valid():
-            #form.save()
             post: Post = form.save(commit=False)
-            if post.foto:
-                img: Image = resize_image(
-                    post.foto, ImageWidth.THUMBNAIL
-                )
-                img.save(post.foto.path)
-
+              
             post.save()
             return redirect('listar_producto')
     else:
@@ -206,12 +198,12 @@ def resize_image(original_image: Image, width: int) -> Image:
     image = image.convert('RGB')
 
     new_size = get_new_image_dimensions(image.size, width)
-    logger.info("original-> %s new size-> %s".format(image.size,new_size))
+    #logger.info("original-> %s new size-> %s".format(image.size,new_size))
     
     if new_size == image.size:
         return
 
-    return image.resize(new_size, Image.ANTIALIAS) 
+    return image.resize((100,100), Image.ANTIALIAS) 
 
 
 

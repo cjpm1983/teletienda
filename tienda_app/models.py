@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 from django.db.models import Avg
 
+from django_resized import ResizedImageField
+
 # Create your models here.
 class Tienda(models.Model):
     nombre = models.CharField(max_length=100)
@@ -21,7 +23,9 @@ class Producto(models.Model):
     tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
     #categorias = models.ManyToManyField(Categoria, related_name='productos', blank=True)
     nombreProducto = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to='productos/',blank=True)
+    #foto = models.ImageField(upload_to='productos/',blank=True)
+    foto = ResizedImageField(size=[1000, 700], upload_to='productos/', blank=True, null=True)
+
     cantidad = models.IntegerField(blank=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     unidad = models.CharField(max_length=20,blank=True)
