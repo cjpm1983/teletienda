@@ -173,3 +173,6 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+teletienda/__pycache__/settings.cpython-38.pyc
+tienda_app/__pycache__/models.cpython-38.pyc
+tienda_app/__pycache__/views.cpython-38.pyc
