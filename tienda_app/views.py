@@ -2,6 +2,12 @@ from django.shortcuts import render
 from typing import Tuple
 from PIL import Image
 
+import logging
+logger = logging.getLogger('tienda_app')
+
+
+
+
 # Create your views here.
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -73,6 +79,8 @@ def crear_producto(request):
     return render(request, 'crear_producto.html', {'form': form})
 
 def editar_producto(request, producto_id):
+    logger.info("Hello world")
+    print("hello")
     producto = get_object_or_404(Producto, pk=producto_id)
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES, instance=producto)
@@ -198,11 +206,14 @@ def resize_image(original_image: Image, width: int) -> Image:
     image = image.convert('RGB')
 
     new_size = get_new_image_dimensions(image.size, width)
-
+    logger.info("original-> %s new size-> %s".format(image.size,new_size))
+    
     if new_size == image.size:
         return
 
-    return image.resize(new_size, Image.ANTIALIAS)
+    return image.resize(new_size, Image.ANTIALIAS) 
+
+
 
 class ImageWidth:
     THUMBNAIL = 150
