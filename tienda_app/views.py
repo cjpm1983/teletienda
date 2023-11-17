@@ -263,7 +263,7 @@ def pushhome(request):
    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
    user = request.user
-   return render(request, 'webpush/pushhome.html', {user: user, 'vapid_key': vapid_key})
+   return render(request, 'notificationspush/pushhome.html', {user: user, 'vapid_key': vapid_key})
 
 @require_POST
 @csrf_exempt

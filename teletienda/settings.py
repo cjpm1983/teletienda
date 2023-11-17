@@ -124,8 +124,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 #STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 #STATIC_ROOT = "/var/www/teletienda/static/"
+
+# la siguiente linea la agregue por razon de que no estaba captando los archivos estaticos
+# en las templates / sin embargo tuve que deshabilitar STATIC_ROOT porque daba error de que 
+# ambos no pueden apuntar al mismo lugar
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+   os.path.join(BASE_DIR, "static"),
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

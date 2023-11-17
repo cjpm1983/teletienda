@@ -36,8 +36,9 @@ urlpatterns = [
 
     path('pushhome', pushhome),
     path('send_push', send_push),
-    path('webpush/', include('webpush.urls')),
+
+    #path('webpush/', include('webpush.urls')),
 
 
-    path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/x-javascript')),
+    path('sw.js', TemplateView.as_view(template_name='notificationspush/sw.js', content_type='application/x-javascript')),
 ]
