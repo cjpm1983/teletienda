@@ -5,10 +5,13 @@ from django.contrib.auth import views as auth_views
 
 from . import views
 
+from .views import pushhome, send_push
 
 router = routers.DefaultRouter()
 router.register(r'tiendas', TiendaViewSet)
 router.register(r'productos', ProductoViewSet)
+
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', views.listar_producto, name='listar_producto_1'),
@@ -31,4 +34,10 @@ urlpatterns = [
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
 
+    path('pushhome', pushhome),
+    path('send_push', send_push),
+    path('webpush/', include('webpush.urls')),
+
+
+    path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/x-javascript')),
 ]
