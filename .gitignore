@@ -176,3 +176,4 @@ cython_debug/
 teletienda/__pycache__/settings.cpython-38.pyc
 tienda_app/__pycache__/models.cpython-38.pyc
 tienda_app/__pycache__/views.cpython-38.pyc
+*.pyc
