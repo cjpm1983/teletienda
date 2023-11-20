@@ -1,10 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Registro de usuario</h2>
-  <form method="POST">
+  <div class="form-group">
+    <form class="form-signin" method="post">
+      <h2 class="form-signin-heading">Iniciar sesión</h2>
+      <b style="color:crimson;">{{ form.non_field_errors }}</b>
+    <label for="username" class="sr-only">Nombre de usuario</label>
+    <input name="username" type="text" id="id_username" class="form-control" placeholder="Nombre de usuario" required autofocus>
+    <b style="color:crimson;">{{ form.username.errors }}</b>
+    <i>Requerido. 150 carácteres como máximo. Únicamente letras, dígitos y @/./+/-/_</i>
+    <br>
+    <label for="id_email" class="sr-only">Nombre de usuario</label>
+    <input name="email" type="email" id="id_email" class="form-control" placeholder="Correo ej. ejemplo@gmail.com " required autofocus>
+    <b style="color:crimson;">{{ form.email.errors }}</b>
+    <br>
+    <label for="id_password1" class="sr-only">Contraseña</label>
+    <input name="password1" type="password" id="id_password1" class="form-control" placeholder="Contraseña" required>
+    <b style="color:crimson;">{{ form.password1.errors }}</b>
+    <i>
+        Su contraseña no puede asemejarse tanto a su otra información personal.
+        Su contraseña debe contener al menos 8 caracteres.
+        Su contraseña no puede ser una clave utilizada comúnmente.
+        Su contraseña no puede ser completamente numérica.
+    </i>
+    <label for="id_password2" class="sr-only">Contraseña</label>
+    <input name="password2" type="password" id="id_password2" class="form-control" placeholder="Repetir Contraseña" required>
+    <b style="color:crimson;">{{ form.password2.errors }}</b>
+
+    <!--div class="checkbox">
+      <label>
+        <input type="checkbox" value="remember-me"> Recordarme
+      </label>
+    </div-->
+  </br>
+    <button type="submit" class="btn btn-lg btn-primary btn-block">Crear cuenta</button>
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrarse</button>
   </form>
+  </div>
 {% endblock %}

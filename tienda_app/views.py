@@ -161,6 +161,7 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
 @login_required
 def profile(request):
     return render(request, 'registration/profile.html')
@@ -169,7 +170,8 @@ from django.contrib.auth import logout
 
 def milogout_view(request):
     logout(request)
-    return redirect('logout') 
+    #return redirect('logout') 
+    return redirect('listar_producto') 
 
 class TiendaViewSet(viewsets.ModelViewSet):
     queryset = Tienda.objects.all()

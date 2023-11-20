@@ -1,5 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
+from tienda_app.forms import MyAuthenticationForm
 from .views import TiendaViewSet, ProductoViewSet
 from django.contrib.auth import views as auth_views
 
@@ -26,7 +27,9 @@ urlpatterns = [
     path('listar_producto/', views.listar_producto, name='listar_producto'),
     path('detalle_producto/<int:producto_id>/', views.detalle_producto, name='detalle_producto'),
 
-
+    
+    #path('login/', auth_views.LoginView.as_view(), {'template_name': 'registration/login.html', 'authentication_form': MyAuthenticationForm}),
+    
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/register/', views.register, name='register'),
     path('accounts/profile/', views.profile, name='profile'),

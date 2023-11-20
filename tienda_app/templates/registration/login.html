@@ -1,12 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Iniciar sesión</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Iniciar sesión</button>
-  </form>
-  <p>No tienes una cuenta? <a href="{% url 'register' %}">Regístrate aquí</a></p>
-{% endblock %}
-  
+<div class="form-group">
+  <form class="form-signin" method="post">
+    <h2 class="form-signin-heading">Iniciar sesión</h2>
+    <b style="color:crimson;">{{ form.non_field_errors }}</b>
+  <label for="username" class="sr-only">Nombre de usuario</label>
+  <input name="username" type="text" id="id_username" class="form-control" placeholder="Nombre de usuario" required autofocus>
+  {{ form.username.errors }}
+  <br>
+  <label for="id_password" class="sr-only">Contraseña</label>
+  <input name="password" type="password" id="id_password" class="form-control" placeholder="Contraseña" required>
+  {{ form.password.errors }}
+  <!--div class="checkbox">
+    <label>
+      <input type="checkbox" value="remember-me"> Recordarme
+    </label>
+  </div-->
+</br>
+  <button type="submit" class="btn btn-lg btn-primary btn-block">Iniciar sesión</button>
+  {% csrf_token %}
+</form>
+<br>
+ <p>No tienes una cuenta? <a href="{% url 'register' %}">Regístrate aquí</a></p>
+</div>
+ {% endblock %} 
