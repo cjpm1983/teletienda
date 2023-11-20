@@ -164,7 +164,8 @@ def register(request):
 
 @login_required
 def profile(request):
-    return render(request, 'registration/profile.html')
+    return redirect('listar_producto') 
+    #return render(request, 'registration/profile.html')
 
 from django.contrib.auth import logout
 
@@ -172,6 +173,10 @@ def milogout_view(request):
     logout(request)
     #return redirect('logout') 
     return redirect('listar_producto') 
+
+
+
+
 
 class TiendaViewSet(viewsets.ModelViewSet):
     queryset = Tienda.objects.all()
