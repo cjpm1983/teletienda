@@ -13,7 +13,7 @@ logger = logging.getLogger('django')
 
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import viewsets
-from .models import Tienda, Producto
+from .models import Tienda, Producto, Rating
 from .forms import TiendaForm, ProductoForm
 from django.contrib.auth.forms import UserCreationForm
 
@@ -290,3 +290,16 @@ def send_push(request):
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
+    
+
+def submit_rating(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    rating = int(request.POST.get('rating', 0))
+    
+    # Create or update the rating for the current user and product
+    rating_obj, created = Rating.objects.update_or_create(
+        producto=producto,
+        usuario=request.user,
+        defaults={'stars': rating}
+    )
+    return JsonResponse({'success': True})

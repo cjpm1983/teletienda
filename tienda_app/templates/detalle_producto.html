@@ -38,14 +38,33 @@
       <p>Precio: ${{ producto.precio }}</p>
       <p>Unidad: {{ producto.unidad }}</p>
       <p>{{ producto.descripcion }}</p>
-      <div class="rating">
-        <span class="star"></span>
-        <span class="star"></span>
-        <span class="star"></span>
-        <span class="star"></span>
-        <span class="star"></span>
-      </div>
+
       <button class="btn btn-primary" data-toggle="modal" data-target="#ratingModal">Calificar</button>
+
+      {% comment %} <h3>{{ producto.rating_set.filter(usuario=request.user).first.stars }}</h3> {% endcomment %}
+
+
+      {% for rat in producto.rating_set.all %}
+      {% if rat.usuario == request.user %}
+
+
+      <div style="display: inline-block;" class="rateyo" id="showrating" data-rating="{{rat.stars|default_if_none:"0" }}"></div>
+      <p id="rating_value"></p>
+
+      <script>
+        $(function() {
+            var srating = parseFloat($("#showrating").data("rating"));
+
+            $("#showrating").rateYo({
+                rating: srating,               
+                readOnly: true,
+                starWidth: "30px"
+            });
+
+            $("#rating_value").text("Rating: " + srating + "/5");
+        });
+    </script>
+
     </div>
   </div>
 </div>
@@ -67,14 +86,54 @@
     <div class="modal-content">
       <div class="modal-body">
         <h4>Calificar el producto</h4>
-        <div class="rating">
-          <span class="star"></span>
-          <span class="star"></span>
-          <span class="star"></span>
-          <span class="star"></span>
-          <span class="star"></span>
-        </div>
+
         <button class="btn btn-primary">Enviar calificación</button>
+
+        <!--rating-->
+        <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ rat.stars|default_if_none:"0" }}"></div>
+        <p id="rating_value_{{ producto.id }}"></p>
+    
+        <script>
+          $(function() {
+              var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
+  
+              $("#rating_{{ producto.id }}").rateYo({
+                  rating: rat2,                  
+                  readOnly: false,
+                  starWidth: "30px",
+                  fullStar: true,
+                  onSet: function(rating, rateYoInstance) {
+                    $.ajax({
+                        url: "{% url 'submit_rating' producto.id %}",  // Replace 'submit_rating' with the actual URL name for your view
+                        method: "POST",
+                        data: {
+                            rating: rating,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            $("#rating_value_{{ producto.id }}").text("Rating: " + rating + "/5");
+                            $("#rating_value").text("Rating: " + rating + "/5");
+                            $("#showrating").rateYo("option", "rating", rating);
+                            
+                            //$("#ratingModal").modal('toggle'); 
+                            $('#ratingModal').hide();
+                            $('.modal-backdrop').hide();
+                            
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(error);
+                            $("#rating_value_{{ producto.id }}").text(error);
+                        }
+                    });
+                }
+              });
+  
+              $("#rating_value_{{ producto.id }}").text("Rating: " + rat2 + "/5");
+          });
+      </script>
+      {% endif %}
+      {% endfor %},
+        <!--fin rating-->
       </div>
     </div>
   </div>

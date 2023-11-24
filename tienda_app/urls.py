@@ -44,4 +44,7 @@ urlpatterns = [
 
 
     path('sw.js', TemplateView.as_view(template_name='notificationspush/sw.js', content_type='application/x-javascript')),
+
+    path('submit_rating/<int:producto_id>/', views.submit_rating, name='submit_rating'),
+
 ]
