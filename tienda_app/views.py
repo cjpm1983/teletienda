@@ -102,7 +102,8 @@ def eliminar_producto(request, producto_id):
     return render(request, 'eliminar_producto.html', {'producto': producto})
 
 def listar_producto(request):
-    productos = Producto.objects.all()
+    #productos = Producto.objects.all()
+    productos = Producto.objects.get_queryset().order_by('id')
     mostrar = int(request.GET.get('mostrar', 5))
     paginator = Paginator(productos, mostrar)  # Muestra 4 productos por página
     page_number = request.GET.get('page')
