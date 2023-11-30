@@ -114,7 +114,9 @@ def listar_producto(request):
 
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
-    return render(request, 'detalle_producto.html', {'producto': producto})
+    ratings = producto.rating_set.filter(usuario=request.user)
+    stars = 0 if len(ratings) < 1 else (ratings[0].stars)
+    return render(request, 'detalle_producto.html', {'producto': producto,'rating':stars})
 
 from .forms import CustomUserCreationForm
 from .models import UserProfile

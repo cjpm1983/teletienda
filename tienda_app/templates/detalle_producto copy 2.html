@@ -44,10 +44,11 @@
       {% comment %} <h3>{{ producto.rating_set.filter(usuario=request.user).first.stars }}</h3> {% endcomment %}
 
 
- 
+      {% for rat in producto.rating_set.all %}
+      {% if rat.usuario == request.user %}
 
 
-      <div style="display: inline-block;" class="rateyo" id="showrating" data-rating="{{rating|default_if_none:"0" }}"></div>
+      <div style="display: inline-block;" class="rateyo" id="showrating" data-rating="{{rat.stars|default_if_none:"0" }}"></div>
       <p id="rating_value"></p>
 
       <script>
@@ -86,8 +87,10 @@
       <div class="modal-body">
         <h4>Calificar el producto</h4>
 
+        <button class="btn btn-primary">Enviar calificación</button>
+
         <!--rating-->
-        <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ rating|default_if_none:"0" }}"></div>
+        <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ rat.stars|default_if_none:"0" }}"></div>
         <p id="rating_value_{{ producto.id }}"></p>
     
         <script>
@@ -115,7 +118,6 @@
                             //$("#ratingModal").modal('toggle'); 
                             $('#ratingModal').hide();
                             $('.modal-backdrop').hide();
-                            alert("Calificación recibida, muchas gracias!")
                             
                         },
                         error: function(xhr, status, error) {
@@ -129,6 +131,8 @@
               $("#rating_value_{{ producto.id }}").text("Rating: " + rat2 + "/5");
           });
       </script>
+      {% endif %}
+      {% endfor %},
         <!--fin rating-->
       </div>
     </div>
