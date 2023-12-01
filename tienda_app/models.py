@@ -31,6 +31,11 @@ class Producto(models.Model):
     unidad = models.CharField(max_length=20,blank=True)
     descripcion = models.TextField(blank=True)
 
+    visible = models.BooleanField(default=True,
+                                   verbose_name='Visible',
+                                   help_text='Si el producto es visible se mostrará en la tienda online.',
+                                   )
+
     @property
     def rating_average(self):
         return self.rating_set.aggregate(avg_rating=Avg('stars')).get('avg_rating', 0)

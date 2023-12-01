@@ -2,10 +2,16 @@ from django.contrib import admin
 from .models import Tienda, Producto, Rating
 from django.contrib.auth.models import User
 from .models import UserProfile
+from django.db import models
 
 
 
 class ProductoAdmin(admin.ModelAdmin):
+    list_display = ('nombreProducto', 'tienda', 'visible')
+    list_editable = ('visible',)
+    list_filter = ('tienda','visible')
+    actions = ['update_visible']
+    
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         
@@ -18,6 +24,11 @@ class ProductoAdmin(admin.ModelAdmin):
         
         # Filter the productos based on the allowed tiendas
         return qs.filter(tienda__in=allowed_tiendas)
+    @admin.action(description='Actualizar visibilidad')
+    def update_visible(self, request, queryset):
+        updated_count = queryset.update(visible=True)
+        self.message_user(request, '{} productos actualizados'.format(updated_count))
+    #update_visible.short_description = 'Actualizar visibilidad'
 
 class TiendaAdmin(admin.ModelAdmin):
     filter_horizontal = ('managers',)
