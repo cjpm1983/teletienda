@@ -89,7 +89,8 @@
         <!--rating-->
         <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ rating|default_if_none:"0" }}"></div>
         <p id="rating_value_{{ producto.id }}"></p>
-    
+        
+        {% if user.is_authenticated %}
         <script>
           $(function() {
               var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
@@ -129,6 +130,24 @@
               $("#rating_value_{{ producto.id }}").text("Rating: " + rat2 + "/5");
           });
       </script>
+      {% endif %}
+      {% if not user.is_authenticated %}
+      <script>
+        $(function() {
+            var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
+
+            $("#rating_{{ producto.id }}").rateYo({
+                rating: rat2,                  
+                readOnly: false,
+                starWidth: "30px",
+                fullStar: true,
+                onSet: function(rating, rateYoInstance) {
+                  alert("Debe estar logueado para calificar.")
+                }
+            });
+        });
+    </script>
+      {% endif %}
         <!--fin rating-->
       </div>
     </div>
