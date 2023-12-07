@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de productos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1>Listado de productos</h1>
+        <form action="" method="get">
+            <select name="tienda">
+                <option value="">Todas las tiendas</option>
+                {% for tienda in tiendas %}
+                    <option value="{{ tienda.nombre }}">{{ tienda.nombre }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Filtrar">
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Foto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Unidad</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                    <tr>
+                        <td>{{ producto.nombreProducto }}</td>
+                        <td><img src="{{ producto.foto.url }}" alt="{{ producto.nombreProducto }}" width="100px"></td>
+                        <td>{{ producto.cantidad }}</td>
+                        <td>{{ producto.precio }}</td>
+                        <td>{{ producto.unidad }}</td>
+                        <td>{{ producto.descripcion }}</td>
+                    </tr>
+                    
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

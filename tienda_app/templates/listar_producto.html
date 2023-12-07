@@ -21,6 +21,7 @@
 </style>
 
 
+
 <!--Main layout-->
 <main>
   <div class="container">
@@ -29,47 +30,57 @@
   <!-- Container wrapper -->
   <div class="container-fluid">
     <!-- Navbar brand -->
-    <a class="navbar-brand" href="#">Ordenar por:</a>
+ 
     <!-- Toggle button -->
     <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
       data-mdb-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false"
       aria-label="Toggle navigation">
       <i class="fas fa-bars"></i>
     </button>
-
+    
     <!-- Collapsible wrapper -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent2">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <!-- Link -->
-        <li class="nav-item active">
-          <a class="nav-link text-white" href="#">Tienda</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="#">Precio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="#">Calificación</a>
-        </li>
-      </ul>
-      <!-- Search -->
-      <form class="w-auto py-1" style="max-width: 12rem">
-        <input type="search" class="form-control rounded-0" placeholder="Search" aria-label="Search">
-      </form>
-      <!-- Dropdown -->
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="tiendaDropdown" data-mdb-toggle="dropdown"
-          aria-expanded="false">
-          Tienda
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="tiendaDropdown">
-          <li><a class="dropdown-item" href="#">Todas</a></li>
-          <li><a class="dropdown-item" href="#">Tienda1</a></li>
-          <li><a class="dropdown-item" href="#">Tienda2</a></li>
-          <li><a class="dropdown-item" href="#">Tienda3</a></li>
-        </ul>
-      </div>
+      
 
-      <form class="form-inline" method="get" action="">
+      <!-- Dropdown -->
+
+
+      <input type="checkbox" class="form-check-input" data-toggle="this.form.submit()" data-onstyle="success">
+
+      <form id="navform" class="form-inline" method="get" action="">
+
+
+
+        <input onchange="this.form.submit()" type="search" class="form-control rounded-0" placeholder="Search" aria-label="Search">
+
+
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <!-- Link -->
+  
+          <li class="nav-item">
+            <div class="form-check form-switch">
+
+              <input  class="form-check-input" type="checkbox" role="switch" id="cprecio">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Precio</label>
+            </div>
+          </li>
+          <li class="nav-item">
+            <div class="form-check form-switch">
+              <input onchange="this.form.submit()" class="form-check-input" type="checkbox" role="switch" id="ccalif">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Calificaci&oacute;n</label>
+            </div>
+          </li>
+        </ul>
+
+        <div class="form-group">
+          <select class="form-control"  name="tienda" id="tiendasSelect" onchange="this.form.submit()">
+              <option {% if shop.nombre == "Todas las tiendas" %}selected=""{% endif %} class="dropdown-item" value="">Todas las tiendas</option>
+              {% for tienda in tiendas %}
+                  <option class="dropdown-item" {% if shop.nombre == tienda.nombre %}selected=""{% endif %} value="{{ tienda.nombre }}">{{ tienda.nombre }}</option>
+              {% endfor %}
+          </select>
+        </div>
         <div class="form-group">
             <select class="form-control" name="mostrar" id="mostrar" onchange="this.form.submit()">
                 <option value="5" {% if mostrar == 5 %}selected{% endif %}>5 productos</option>
@@ -173,6 +184,8 @@
           {% endfor %}
         </div>
     </section>
+
+
 <!-- Pagination -->
 <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
   <ul class="pagination">
@@ -205,7 +218,19 @@
 </main>
 <!--Main layout-->
 
-
+<script type="text/javascript">
+  $(document).ready(function () {
+      $('#cprecio').click(function() {
+      //$('#console-event').html('Toggle: ' + $(this).prop('checked'))
+      alert("fufu")
+      $(".form-inline").submit();
+    })
+    $('#ccalif').click(function() {
+      $("#navform").submit();
+      alert("fufu")
+    }) 
+  });
+  </script>
 
 
 

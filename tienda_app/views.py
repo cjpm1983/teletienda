@@ -102,16 +102,24 @@ def eliminar_producto(request, producto_id):
     return render(request, 'eliminar_producto.html', {'producto': producto})
 
 def listar_producto(request):
-    #productos = Producto.objects.all()
-    productos = Producto.objects.get_queryset().order_by('id')
+    if request.GET.get('tienda'):
+        productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('id')
+        tienda = Tienda.objects.filter(nombre=request.GET.get('tienda')).first
+    else:
+        productos = Producto.objects.get_queryset().order_by('id')
+        #tienda = {"nombre": "Todas las tiendas", "id": -1}
+        tienda = Tienda(nombre="Todas las tiendas", id=-1)
     mostrar = int(request.GET.get('mostrar', 5))
     paginator = Paginator(productos, mostrar)  # Muestra 4 productos por página
+    
     page_number = request.GET.get('page')
+
     try:
         page_obj = paginator.get_page(page_number)
     except EmptyPage:
         page_obj = paginator.get_page(1)
-    return render(request, 'listar_producto.html', {'page_obj': page_obj, 'mostrar': mostrar})
+    tiendas = Tienda.objects.all()
+    return render(request, 'listar_producto.html', {'page_obj': page_obj, 'mostrar': mostrar, 'tiendas': tiendas, 'shop': tienda})
 
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
