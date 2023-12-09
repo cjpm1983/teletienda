@@ -102,14 +102,57 @@ def eliminar_producto(request, producto_id):
     return render(request, 'eliminar_producto.html', {'producto': producto})
 
 def listar_producto(request):
+    
+    #definiendo el orden
+    orderby = 'id'
+
+    cprecio = request.GET.get('cprecio') if request.GET.get('cprecio') else "off"
+    ccalif = request.GET.get('ccalif') if request.GET.get('ccalif') else "off"
+
+    
     if request.GET.get('tienda'):
-        productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('id')
         tienda = Tienda.objects.filter(nombre=request.GET.get('tienda')).first
+        
+        if (cprecio=='on'):
+            # solo precio
+            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('precio')    
+            if (ccalif == 'on'):
+                #precio y calificacion
+                productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('precio','-rating_avg')    
+            
+        elif (ccalif == 'on'):
+            #solo calificacion
+            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('-rating_avg')    
+        else:
+            #solo id
+            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('id')    
+            
+        
     else:
-        productos = Producto.objects.get_queryset().order_by('id')
-        #tienda = {"nombre": "Todas las tiendas", "id": -1}
         tienda = Tienda(nombre="Todas las tiendas", id=-1)
+        
+        if (cprecio=='on'):
+            # solo precio
+            productos = Producto.objects.get_queryset().order_by('precio')    
+            if (ccalif == 'on'):
+                #precio y calificacion
+                #productos = Producto.objects.get_queryset().order_by('precio','rating_average')  
+                productos = Producto.objects.all().order_by('precio', '-rating_avg')  
+        elif (ccalif == 'on'):
+            #solo calificacion
+            #productos = Producto.objects.get_queryset().order_by('rating_average')    
+            productos = Producto.objects.all().order_by('-rating_avg')  
+        else:
+            #solo id
+            productos = Producto.objects.get_queryset().order_by('id')
+            
+        
     mostrar = int(request.GET.get('mostrar', 5))
+    
+
+
+
+
     paginator = Paginator(productos, mostrar)  # Muestra 4 productos por página
     
     page_number = request.GET.get('page')
@@ -118,8 +161,9 @@ def listar_producto(request):
         page_obj = paginator.get_page(page_number)
     except EmptyPage:
         page_obj = paginator.get_page(1)
+        
     tiendas = Tienda.objects.all()
-    return render(request, 'listar_producto.html', {'page_obj': page_obj, 'mostrar': mostrar, 'tiendas': tiendas, 'shop': tienda})
+    return render(request, 'listar_producto.html', {'page_obj': page_obj, 'mostrar': mostrar, 'tiendas': tiendas, 'shop': tienda, 'cprecio':cprecio,'ccalif':ccalif})
 
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
@@ -316,4 +360,12 @@ def submit_rating(request, producto_id):
         usuario=request.user,
         defaults={'stars': rating}
     )
+
+    # Calculate the new average rating for the product
+    #new_average_rating = Rating.objects.filter(producto=producto).aggregate(avg_rating=Avg('stars'))['avg_rating']
+    # Update the average rating of the product
+    producto.rating_avg = producto.rating_average
+    producto.rating_cnt = producto.rating_count
+    producto.save()
+
     return JsonResponse({'success': True})

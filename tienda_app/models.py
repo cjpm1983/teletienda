@@ -35,12 +35,21 @@ class Producto(models.Model):
                                    verbose_name='Visible',
                                    help_text='Si el producto es visible se mostrará en la tienda online.',
                                    )
+    
+    rating_avg = models.FloatField(default=0)
+    rating_cnt = models.IntegerField(default=0)
 
     @property
     def rating_average(self):
         return self.rating_set.aggregate(avg_rating=Avg('stars')).get('avg_rating', 0)
+    
+    @property
+    def rating_count(self):
+        return self.rating_set.count()
+    
     def __str__(self):
         return self.nombreProducto
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

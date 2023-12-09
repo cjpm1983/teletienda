@@ -48,26 +48,20 @@
       <input type="checkbox" class="form-check-input" data-toggle="this.form.submit()" data-onstyle="success">
 
       <form id="navform" class="form-inline" method="get" action="">
-
-
-
         <input onchange="this.form.submit()" type="search" class="form-control rounded-0" placeholder="Search" aria-label="Search">
 
-
-
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <!-- Link -->
-  
           <li class="nav-item">
             <div class="form-check form-switch">
+              
+              <input {% if cprecio and cprecio == "on" %}checked{% endif %} name="cprecio" class="form-check-input" type="checkbox" role="switch" id="cprecio" onchange="this.form.submit()">
 
-              <input  class="form-check-input" type="checkbox" role="switch" id="cprecio">
               <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Precio</label>
             </div>
           </li>
           <li class="nav-item">
             <div class="form-check form-switch">
-              <input onchange="this.form.submit()" class="form-check-input" type="checkbox" role="switch" id="ccalif">
+              <input {% if ccalif and ccalif == "on" %}checked{% endif %}  name="ccalif" class="form-check-input" type="checkbox" role="switch" id="ccalif">
               <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Calificaci&oacute;n</label>
             </div>
           </li>
@@ -119,6 +113,7 @@
   </div>
   <!-- Container wrapper -->
 </nav>
+{% if cprecio %}{{cprecio}}***********{% endif %}
     <!-- Products -->
     <section>
       <div class="text-center">
@@ -130,21 +125,7 @@
               <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
                 <img src="{{ producto.foto.url }}" class="img-thumbnail" style="max-height: 150px;" />
                 <a href="{% url 'detalle_producto' producto.id %}">
-                  <div class="mask">
-                    <div class="d-flex justify-content-start align-items-end h-100">
-                      <h5><span class="badge bg-dark ms-2">
 
-
-                          {% if producto.rating_average %}
-                          <p>{{ producto.rating_average }}</p>
-                          {% else %}
-                          <p>No rating</p>
-                          {% endif %}
-
-
-                        </span></h5>
-                    </div>
-                  </div>
                   <div class="hover-overlay">
                     <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
                   </div>
@@ -152,20 +133,62 @@
               </div>
               <div class="card-body">
                 
-                <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ producto.rating_average|default_if_none:"0" }}"></div>
-                <p id="rating_value_{{ producto.id }}"></p>
-            
+                <div style="display: flex;">
+                  
+                <span>
+                <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ producto.rating_avg|default_if_none:"0" }}"></div>
+                <p>{{producto.rating_cnt}} calificaciones</p>
+                </span>
+              
+              
+                <input type=hidden id="rating_avgh_{{producto.id}}" value="{{ producto.rating_avg|floatformat:2}}">
+                
+               
+                <span>
+                  <div class="d-flex justify-content-start align-items-end h-100">
+
+                    <h5>
+
+                      {% if producto.rating_avg == 0 %}
+                        <span class="badge bg-dark ms-2">
+                      {% elif producto.rating_avg > 0 and producto.rating_avg < 3 %}
+                        <span class="badge bg-warning ms-2">
+                      {% elif producto.rating_avg >= 3 and producto.rating_avg < 5 %}
+                        <span class="badge bg-primary ms-2">
+                      {% else %}
+                        <span class="badge bg-success ms-2">
+                      {% endif %}
+
+  
+                        <p>{{ producto.rating_avg | floatformat:1 }}</p>
+                      </span></h5>
+                  </div>
+                </span>
+                
+              </div>
+
+
                 <script>
                     $(function() {
-                        var ratingAverage = parseFloat($("#rating_{{ producto.id }}").data("rating"));
-            
+                        //var ratingAverage = parseFloat($("#rating_{{ producto.id }}").data("rating")).toFixed(2);
+                        //var ratingAverage = parseFloat($("#rating_avgh_{{producto.id}}").val())
+                        //var ratingAverage = parseFloat($("#rating_avgh_{{producto.id}}").val())
+                        var ratingAverage = parseFloat($("#rating_avgh_{{producto.id}}").val().replace(",",".")).toFixed(1)
                         $("#rating_{{ producto.id }}").rateYo({
                             rating: ratingAverage,
                             readOnly: true,
-                            starWidth: "30px"
-                        });
-            
-                        $("#rating_value_{{ producto.id }}").text("Rating: " + ratingAverage + "/5");
+                            starWidth: "30px",
+                            multiColor: {
+ 
+                              "startColor": "#FF0000", //RED
+                              "endColor"  : "#00FF00"  //GREEN
+                            }
+                          });
+                          
+                          //precision: 2,
+                          //fullStar: false,
+                          //halfStar: true
+                        $("#rating_value_{{ producto.id }}").text("Rating: " + ratingAverage.toFixed(2) + "/5");
                     });
                 </script>
 
@@ -185,7 +208,7 @@
         </div>
     </section>
 
-
+*************AGREGAR LOS DATOS DE CCALIF Y CPRECIO A LOS ENLACES DE PAGINACION
 <!-- Pagination -->
 <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
   <ul class="pagination">
@@ -222,12 +245,12 @@
   $(document).ready(function () {
       $('#cprecio').click(function() {
       //$('#console-event').html('Toggle: ' + $(this).prop('checked'))
-      alert("fufu")
+      //alert("fufu")
       $(".form-inline").submit();
     })
     $('#ccalif').click(function() {
       $("#navform").submit();
-      alert("fufu")
+      //alert("fufu")
     }) 
   });
   </script>
