@@ -193,7 +193,7 @@
                           //precision: 2,
                           //fullStar: false,
                           //halfStar: true
-                        $("#rating_value_{{ producto.id }}").text("Rating: " + ratingAverage.toFixed(2) + "/5");
+                        //$("#rating_value_{{ producto.id }}").text("Rating: " + ratingAverage.toFixed(2) + "/5");
                     });
                 </script>
 
@@ -219,7 +219,7 @@
   <ul class="pagination">
     {% if page_obj.has_previous %}
     <li class="page-item">
-      <a class="page-link" href="?mostrar={{ mostrar }}&page={{ page_obj.previous_page_number }}" aria-label="Previous">
+      <a class="page-link" href="?mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ page_obj.previous_page_number }}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
@@ -228,12 +228,12 @@
     {% if num == page_obj.number %}
     <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
     {% else %}
-    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+    <li class="page-item"><a class="page-link" href="?mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ num }}">{{ num }}</a></li>
     {% endif %}
     {% endfor %}
     {% if page_obj.has_next %}
     <li class="page-item">
-      <a class="page-link" href="?mostrar={{ mostrar }}&page={{ page_obj.next_page_number }}" aria-label="Next">
+      <a class="page-link" href="?mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ page_obj.next_page_number }}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

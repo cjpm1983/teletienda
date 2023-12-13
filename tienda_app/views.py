@@ -147,7 +147,7 @@ def listar_producto(request):
             productos = Producto.objects.get_queryset().order_by('id')
             
         
-    mostrar = int(request.GET.get('mostrar', 5))
+    mostrar = int(request.GET.get('mostrar', 2))
     
 
 
