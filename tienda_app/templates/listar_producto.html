@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+
 <style>
   .price {
     color: #263238;
@@ -25,7 +26,13 @@
 <!--Main layout-->
 <main>
   <div class="container">
-<!-- Navbar -->
+    <div class="p-2 container-fluid " style="background-color: #607D8B">
+      <div class="row">
+        <!--img src={% static 'shop.png' %} class="col-sm img-thumbnail"-->
+        <h1 class="col-sm" style="color:white;display:flex; justify-content:center;">Teletienda</h1>
+    </div>
+  </div>
+    <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark mt-3 mb-5 shadow p-2" style="background-color: #607D8B">
   <!-- Container wrapper -->
   <div class="container-fluid">
@@ -38,27 +45,36 @@
       <i class="fas fa-bars"></i>
     </button>
     
+
     <!-- Collapsible wrapper -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent2">
       
 
       <!-- Dropdown -->
 
+     
+     <form id="navform" class="form-inline row" method="get" action="">
+        
+        <div class="input-group  col-sm">
+            <input name="search" onchange="this.form.submit()"  class="form-control border-end-0 border rounded-pill" placeholder="buscar..." type="search" id="example-search-input">
+            <span class="input-group-append">
+                <button class="btn btn-outline-primary bg-white border-bottom-0 border rounded-pill ms-n5" type="button">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+            
+        </div>
 
-      <input type="checkbox" class="form-check-input" data-toggle="this.form.submit()" data-onstyle="success">
-
-      <form id="navform" class="form-inline" method="get" action="">
-        <input onchange="this.form.submit()" type="search" class="form-control rounded-0" placeholder="Search" aria-label="Search">
-
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0  col-sm" style="color:white;" >
           <li class="nav-item">
             <div class="form-check form-switch">
               
               <input {% if cprecio and cprecio == "on" %}checked{% endif %} name="cprecio" class="form-check-input" type="checkbox" role="switch" id="cprecio" onchange="this.form.submit()">
-
+              
               <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Precio</label>
             </div>
           </li>
+
           <li class="nav-item">
             <div class="form-check form-switch">
               <input {% if ccalif and ccalif == "on" %}checked{% endif %}  name="ccalif" class="form-check-input" type="checkbox" role="switch" id="ccalif">
@@ -67,7 +83,8 @@
           </li>
         </ul>
 
-        <div class="form-group">
+
+        <div class="form-group  col-sm">
           <select class="form-control"  name="tienda" id="tiendasSelect" onchange="this.form.submit()">
               <option {% if shop.nombre == "Todas las tiendas" %}selected=""{% endif %} class="dropdown-item" value="">Todas las tiendas</option>
               {% for tienda in tiendas %}
@@ -75,7 +92,8 @@
               {% endfor %}
           </select>
         </div>
-        <div class="form-group">
+
+        <div class="form-group col-sm">
             <select class="form-control" name="mostrar" id="mostrar" onchange="this.form.submit()">
                 <option value="5" {% if mostrar == 5 %}selected{% endif %}>5 productos</option>
                 <option value="50" {% if mostrar == 50 %}selected{% endif %}>50 productos</option>
@@ -84,32 +102,35 @@
         </div>
     </form>
 
- <!-- Dropdown -->
- {% if user.is_authenticated %}
- <div class="dropdown">
-   <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-mdb-toggle="dropdown"
-     aria-expanded="false">
-     {{ user.username|first|upper }}
-   </button>
-   <ul class="dropdown-menu" aria-labelledby="userDropdown">
-     <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
-     <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
-   </ul>
- </div>
-{% else %}
- <div class="dropdown">
-   <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
-     aria-expanded="false">
-     Registro
-   </button>
-   <ul class="dropdown-menu" aria-labelledby="registerDropdown">
-     <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
-     <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
-   </ul>
- </div>
-{% endif %}
+ 
 
     </div>
+
+<!-- Dropdown Registro-->
+{% if user.is_authenticated %}
+<div class="dropdown" style="position: absolute; right: 10px;">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-mdb-toggle="dropdown"
+    aria-expanded="false">
+    {{ user.username|first|upper }}
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="userDropdown">
+    <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
+    <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
+  </ul>
+</div>
+{% else %}
+<div class="dropdown" style="position: absolute; right: 10px;">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
+    aria-expanded="false">
+    Registro
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="registerDropdown">
+    <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
+    <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
+  </ul>
+</div>
+{% endif %}
+
   </div>
   <!-- Container wrapper -->
 </nav>
@@ -198,11 +219,11 @@
                 </script>
 
 
-                <a href="" class="text-reset">
+                <a class="text-reset" href="{% url 'detalle_producto' producto.id %}">
                   <h5 class="card-title mb-2">{{ producto.nombreProducto }} </h5>
                   <h6>Unidad: {{ producto.unidad }}</h6>
                 </a>
-                <a href="" class="text-reset ">
+                <a class="text-reset " href="{% url 'detalle_producto' producto.id %}">
                   <p>{{ producto.tienda }} - {{ producto.descripcion |truncatewords:50 }}</p>
                 </a>
                 <h6 class="mb-3 price">{{ producto.precio }}$</h6>

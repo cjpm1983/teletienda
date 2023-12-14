@@ -101,7 +101,7 @@ def eliminar_producto(request, producto_id):
         return redirect('listar_producto')
     return render(request, 'eliminar_producto.html', {'producto': producto})
 
-def listar_producto(request):
+""" def listar_producto(request):
     
     #definiendo el orden
     orderby = 'id'
@@ -150,9 +150,6 @@ def listar_producto(request):
     mostrar = int(request.GET.get('mostrar', 5))
     
 
-
-
-
     paginator = Paginator(productos, mostrar)  # Muestra 4 productos por página
     
     page_number = request.GET.get('page')
@@ -164,6 +161,66 @@ def listar_producto(request):
         
     tiendas = Tienda.objects.all()
     return render(request, 'listar_producto.html', {'page_obj': page_obj, 'mostrar': mostrar, 'tiendas': tiendas, 'shop': tienda, 'cprecio':cprecio,'ccalif':ccalif})
+ """
+def listar_producto(request):
+    # Definir el orden por defecto
+    orderby = 'id'
+    
+    # Obtener valores de los filtros de precio y calificación
+    cprecio = request.GET.get('cprecio') if request.GET.get('cprecio') else "off"
+    ccalif = request.GET.get('ccalif') if request.GET.get('ccalif') else "off"
+    
+    # Obtener termino de busqueda si se a proporcionado
+    termino_busqueda = request.GET.get('search')
+
+    # Filtrar por tienda si se especifica
+    if request.GET.get('tienda'):
+        tienda = Tienda.objects.filter(nombre=request.GET.get('tienda')).first()
+        if cprecio == 'on':
+            # Ordenar por precio
+            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('precio')
+            if ccalif == 'on':
+                # Ordenar por precio y calificación
+                productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('precio', '-rating_avg')
+        elif ccalif == 'on':
+            # Ordenar solo por calificación
+            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('-rating_avg')
+        else:
+            # Ordenar por ID
+            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('id')
+    else:
+        # Si no se especifica tienda, mostrar todos los productos
+        tienda = Tienda(nombre="Todas las tiendas", id=-1)
+        if cprecio == 'on':
+            # Ordenar por precio
+            productos = Producto.objects.all().order_by('precio')
+            if ccalif == 'on':
+                # Ordenar por precio y calificación
+                productos = Producto.objects.all().order_by('precio', '-rating_avg')
+        elif ccalif == 'on':
+            # Ordenar solo por calificación
+            productos = Producto.objects.all().order_by('-rating_avg')
+        else:
+            # Ordenar por ID
+            productos = Producto.objects.all().order_by('id')
+
+    if termino_busqueda:
+        productos = productos.filter(nombreProducto__icontains=termino_busqueda)
+    
+    # Paginar resultados
+    mostrar = int(request.GET.get('mostrar', 5))
+    paginator = Paginator(productos, mostrar)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = paginator.get_page(page_number)
+    except EmptyPage:
+        page_obj = paginator.get_page(1)
+    
+    # Obtener todas las tiendas para mostrar en la página
+    tiendas = Tienda.objects.all()
+    
+    # Renderizar la página con los resultados y filtros
+    return render(request, 'listar_producto.html', {'page_obj': page_obj, 'mostrar': mostrar, 'tiendas': tiendas, 'shop': tienda, 'cprecio': cprecio, 'ccalif': ccalif, 'search': termino_busqueda})
 
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
