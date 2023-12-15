@@ -42,9 +42,33 @@
     <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
       data-mdb-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false"
       aria-label="Toggle navigation">
-      <i class="fas fa-bars"></i>
+      <i class="fas fa-chevron-down"></i>
     </button>
-    
+
+      <!-- Dropdown Registro-->
+    {% if user.is_authenticated %}
+    <div class="dropdown" style="">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-mdb-toggle="dropdown"
+        aria-expanded="false">
+        {{ user.username|first|upper }}
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="userDropdown">
+        <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
+        <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
+      </ul>
+    </div>
+    {% else %}
+    <div class="dropdown" style="">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
+        aria-expanded="false">
+        Registro
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="registerDropdown">
+        <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
+        <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
+      </ul>
+    </div>
+    {% endif %}
 
     <!-- Collapsible wrapper -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent2">
@@ -55,20 +79,21 @@
      
      <form id="navform" class="form-inline row" method="get" action="">
         
-        <div class="input-group  col-sm">
-            <input name="search" onchange="this.form.submit()"  class="form-control border-end-0 border rounded-pill" placeholder="buscar..." type="search" id="example-search-input">
+        <div class="input-group  col-sm-6 my-2">
+            <input name="search" onchange="this.form.submit()" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="buscar..." type="search" id="example-search-input">
             <span class="input-group-append">
-                <button class="btn btn-outline-primary bg-white border-bottom-0 border rounded-pill ms-n5" type="button">
+                <button class="btn bg-white border-bottom-0 border " type="button">
                     <i class="fa fa-search"></i>
                 </button>
             </span>
             
         </div>
 
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0  col-sm" style="color:white;" >
+        <ul class="me-auto mb-2 mb-2  col-sm-6" style="color:white; list-style-type: none;" >
+          
           <li class="nav-item">
             <div class="form-check form-switch">
-              
+              <i class="fa fa-dollar"></i>
               <input {% if cprecio and cprecio == "on" %}checked{% endif %} name="cprecio" class="form-check-input" type="checkbox" role="switch" id="cprecio" onchange="this.form.submit()">
               
               <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Precio</label>
@@ -77,13 +102,15 @@
 
           <li class="nav-item">
             <div class="form-check form-switch">
+              <i class="fa fa-star"></i>
               <input {% if ccalif and ccalif == "on" %}checked{% endif %}  name="ccalif" class="form-check-input" type="checkbox" role="switch" id="ccalif">
               <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Calificaci&oacute;n</label>
             </div>
           </li>
+          
         </ul>
 
-
+      <div class="col-sm-4">
         <div class="form-group  col-sm">
           <select class="form-control"  name="tienda" id="tiendasSelect" onchange="this.form.submit()">
               <option {% if shop.nombre == "Todas las tiendas" %}selected=""{% endif %} class="dropdown-item" value="">Todas las tiendas</option>
@@ -100,38 +127,17 @@
                 <option value="100" {% if mostrar == 100 %}selected{% endif %}>100 productos</option>
             </select>
         </div>
+      </div>
     </form>
 
- 
+    </div><!--del Collapsible-->
 
-    </div>
 
-<!-- Dropdown Registro-->
-{% if user.is_authenticated %}
-<div class="dropdown" style="position: absolute; right: 10px;">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-mdb-toggle="dropdown"
-    aria-expanded="false">
-    {{ user.username|first|upper }}
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="userDropdown">
-    <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
-    <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
-  </ul>
-</div>
-{% else %}
-<div class="dropdown" style="position: absolute; right: 10px;">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
-    aria-expanded="false">
-    Registro
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="registerDropdown">
-    <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
-    <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
-  </ul>
-</div>
-{% endif %}
 
-  </div>
+  </div><!--del container-fluid-->
+
+
+
   <!-- Container wrapper -->
 </nav>
 
@@ -240,7 +246,7 @@
   <ul class="pagination">
     {% if page_obj.has_previous %}
     <li class="page-item">
-      <a class="page-link" href="?mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ page_obj.previous_page_number }}" aria-label="Previous">
+      <a class="page-link" href="?search={{ search }}&mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ page_obj.previous_page_number }}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
@@ -249,12 +255,12 @@
     {% if num == page_obj.number %}
     <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
     {% else %}
-    <li class="page-item"><a class="page-link" href="?mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ num }}">{{ num }}</a></li>
+    <li class="page-item"><a class="page-link" href="?search={{ search }}&mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ num }}">{{ num }}</a></li>
     {% endif %}
     {% endfor %}
     {% if page_obj.has_next %}
     <li class="page-item">
-      <a class="page-link" href="?mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ page_obj.next_page_number }}" aria-label="Next">
+      <a class="page-link" href="?search={{ search }}&mostrar={{ mostrar }}&cprecio={{ cprecio }}&calif={{ ccalif }}&page={{ page_obj.next_page_number }}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

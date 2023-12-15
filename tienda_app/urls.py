@@ -36,6 +36,7 @@ urlpatterns = [
     path('logout/', views.milogout_view, name='milogout'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+    path('checkmail/', views.checkmail, name='checkmail'),
 
     path('pushhome', pushhome),
     path('send_push', send_push),

@@ -26,14 +26,14 @@
 }
 </style>
 
-<div class="product-details">
-  <div class="row">
-    <div class="col-md-4">
+<div class="product-details card content-fluid p-3">
+  <div class="row m-3">
+    <div class="col-sm-4">
       <a href="#" data-toggle="modal" data-target="#productModal">
         <img src="{{ producto.foto.url }}" alt="Imagen del producto" class="img-fluid">
       </a>
     </div>
-    <div class="col-md-8">
+    <div class="col-sm-6">
       <h2>{{ producto.nombreProducto }}</h2>
       <p>Precio: ${{ producto.precio }}</p>
       <p>Unidad: {{ producto.unidad }}</p>
