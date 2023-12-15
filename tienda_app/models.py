@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models import Avg
 
 from django_resized import ResizedImageField
+from django.utils import timezone
 
 # Create your models here.
 class Tienda(models.Model):
@@ -24,12 +25,15 @@ class Producto(models.Model):
     #categorias = models.ManyToManyField(Categoria, related_name='productos', blank=True)
     nombreProducto = models.CharField(max_length=100)
     #foto = models.ImageField(upload_to='productos/',blank=True)
-    foto = ResizedImageField(size=[1000, 700], upload_to='productos/', blank=True, null=True)
+    foto = ResizedImageField(size=[1000, 700], upload_to='productos/',default='images/default.png', blank=True, null=True)
 
     cantidad = models.IntegerField(blank=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     unidad = models.CharField(max_length=20,blank=True)
     descripcion = models.TextField(blank=True)
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     visible = models.BooleanField(default=True,
                                    verbose_name='Visible',
@@ -38,6 +42,13 @@ class Producto(models.Model):
     
     rating_avg = models.FloatField(default=0)
     rating_cnt = models.IntegerField(default=0)
+
+    likes = models.ManyToManyField(User, blank=True)
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = 'producto'
+        verbose_name_plural = 'productos'
 
     @property
     def rating_average(self):
@@ -50,6 +61,10 @@ class Producto(models.Model):
     def __str__(self):
         return self.nombreProducto
 
+    @property
+    def get_commentarios(self):
+        own_commentarios = Comment.objects.filter(producto=self)
+        return own_commentarios
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -65,6 +80,22 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"Rating for {self.producto.nombreProducto} by {self.usuario.username}"  
+    
+class Comment(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='comentarios', null=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    approved_comment = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.usuario}-->{self.text} '
+    
+    def approve(self):
+        self.approved_comment = True
+        self.save()
+    
 
 '''
 5. Para acceder al campo telegram_username de un usuario, puedes utilizar la relación inversa desde el modelo User al modelo UserProfile. Aquí hay un ejemplo usando el modelo User:
