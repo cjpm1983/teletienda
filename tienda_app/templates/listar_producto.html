@@ -29,7 +29,35 @@
     <div class="p-2 container-fluid " style="background-color: #607D8B">
       <div class="row">
         <!--img src={% static 'shop.png' %} class="col-sm img-thumbnail"-->
-        <h1 class="col-sm" style="color:white;display:flex; justify-content:center;">Teletienda</h1>
+        <h1 class="col-sm-10" style="color:white;display:flex; justify-content:center;">Teletienda</h1>
+
+
+      <!-- Dropdown Registro-->
+    {% if user.is_authenticated %}
+    <div class="dropdown col-sm-1" style="">
+      <button class="btn btn-secondary dropdown-toggle col-sm-3" type="button" id="userDropdown" data-mdb-toggle="dropdown"
+        aria-expanded="false">
+        {{ user.username|first|upper }}
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="userDropdown">
+        <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
+        <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
+      </ul>
+    </div>
+    {% else %}
+    <div class="dropdown col-sm-1" style="">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
+        aria-expanded="false">
+        Registro
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="registerDropdown">
+        <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
+        <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
+      </ul>
+    </div>
+    {% endif %}
+
+
     </div>
   </div>
     <!-- Navbar -->
@@ -45,30 +73,6 @@
       <i class="fas fa-chevron-down"></i>
     </button>
 
-      <!-- Dropdown Registro-->
-    {% if user.is_authenticated %}
-    <div class="dropdown" style="">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-mdb-toggle="dropdown"
-        aria-expanded="false">
-        {{ user.username|first|upper }}
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="userDropdown">
-        <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
-        <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
-      </ul>
-    </div>
-    {% else %}
-    <div class="dropdown" style="">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
-        aria-expanded="false">
-        Registro
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="registerDropdown">
-        <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
-        <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
-      </ul>
-    </div>
-    {% endif %}
 
     <!-- Collapsible wrapper -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent2">
@@ -77,7 +81,7 @@
       <!-- Dropdown -->
 
      
-     <form id="navform" class="form-inline row" method="get" action="">
+     <form id="navform" class="form-inline row col-lg-12" method="get" action="">
         
         <div class="input-group  col-sm-6 my-2">
             <input name="search" onchange="this.form.submit()" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="buscar..." type="search" id="example-search-input">
@@ -190,8 +194,8 @@
                         <p><i class="fa fa-star" aria-hidden="true"> </i>&nbsp;{{ producto.rating_avg | floatformat:1 }}</p>
                       </span>
                     </a>
-                    <a href="#">
-                      <p><i class="fa fa-comments" aria-hidden="true"> </i>&nbsp;{{ 7}}</p>
+                    <a href="{% url 'detalle_producto' producto.id %}">
+                      <p><i class="fa fa-comments" aria-hidden="true"> </i>&nbsp;{{producto.get_comentarios.count}}</p>
                     </a>
                     </h5>
                   </div>
@@ -224,6 +228,30 @@
                     });
                 </script>
 
+                <hr class="mt-0"/>
+
+
+                <!--########## LIKES #################--
+
+                <div id="like_{{ producto.id }}"class='d-flex justify-content-end col-4 p-0'>
+                  <a
+                    type="button"
+                    data-producto="like_{{producto.id}}"
+                    class="fs-5 text-reset like-button"
+                    >
+                    {% if user in producto.likes.all %}
+                    <i class="fas fa-heart text-danger"></i>
+                    {% else%}
+                    <i class="far fa-heart"></i>
+                    {% endif %}
+                  </a>
+                  <p class="fw-bold fs-5 px-1">{{producto.likes.all | length}}</p>
+                  <p class="fw-bold fs-5 col-auto">Me gusta</p>
+                </div>
+                
+                <hr /-->
+
+                  <!--########## DESCRIPCION #################-->
 
                 <a class="text-reset" href="{% url 'detalle_producto' producto.id %}">
                   <h5 class="card-title mb-2">{{ producto.nombreProducto }} </h5>

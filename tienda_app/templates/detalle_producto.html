@@ -32,21 +32,9 @@
       <a href="#" data-toggle="modal" data-target="#productModal">
         <img src="{{ producto.foto.url }}" alt="Imagen del producto" class="img-fluid">
       </a>
-    </div>
-    <div class="col-sm-6">
-      <h2>{{ producto.nombreProducto }}</h2>
-      <p>Precio: ${{ producto.precio }}</p>
-      <p>Unidad: {{ producto.unidad }}</p>
-      <p>{{ producto.descripcion }}</p>
-
-      <button class="btn btn-primary" data-toggle="modal" data-target="#ratingModal">Calificar</button>
-
-      {% comment %} <h3>{{ producto.rating_set.filter(usuario=request.user).first.stars }}</h3> {% endcomment %}
 
 
  
-
-
       <div style="display: inline-block;" class="rateyo" id="showrating" data-rating="{{rating|default_if_none:"0" }}"></div>
       <p id="rating_value"></p>
 
@@ -63,6 +51,41 @@
             $("#rating_value").text("Rating: " + srating + "/5");
         });
     </script>
+
+    </div>
+    <div class="col-sm-6">
+      <h2>{{ producto.nombreProducto }}</h2>
+      <p>Precio: ${{ producto.precio }}</p>
+      <p>Unidad: {{ producto.unidad }}</p>
+      <p>{{ producto.descripcion }}</p>
+
+      <button class="btn btn-primary" data-toggle="modal" data-target="#ratingModal">Calificar</button>
+      <hr class="mt-0"/>
+
+
+      {% comment %} <h3>{{ producto.rating_set.filter(usuario=request.user).first.stars }}</h3> {% endcomment %}
+
+
+         <!--########## LIKES #################--
+
+         <div id="like_{{ producto.id }}"class='d-flex justify-content-end col-4 p-0'>
+          <a
+            type="button"
+            data-producto="like_{{producto.id}}"
+            class="fs-5 text-reset like-button"
+            >
+            {% if user in producto.likes.all %}
+            <i class="fas fa-heart text-danger"></i>
+            {% else%}
+            <i class="far fa-heart"></i>
+            {% endif %}
+          </a>
+          <p class="fw-bold fs-5 px-1">{{producto.likes.all | length}}</p>
+          <p class="fw-bold fs-5 col-auto">Me gusta</p>
+        </div-->
+
+
+
 
     </div>
   </div>
@@ -84,6 +107,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body">
+
+
         <h4>Calificar el producto</h4>
 
         <!--rating-->
@@ -155,9 +180,64 @@
 </div>
 
 
+<br>
+<div id="Comentario" class="card mx-4">
+        
+  <p>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      Comentarios
+    </button>
+  </p>
+  <div class="collapse" id="collapseExample">
+    <div class="card card-body">
+      
+            
+        <div class="mb-1 border-0">
+          {% for comment in producto.get_comentarios %}
+          <div class="card">
+            <div class="mb-0 row content ">
+              <strong class="col-sm-2">{{ comment.usuario }}:</strong> 
+              <p class="col-sm-9">{{ comment.text }}</p> 
+            </div>
+          </div>
+          <hr clas='border-0'/>
+          {% endfor %}
+        </div>
+      
+    </div>
+  </div>
 
 
 
+<form class="row" id="comment_form" action="{% url "submit_comment" producto.id %}">
+  {% csrf_token %}
+  <div class="d-flex justify-content-center">
+    <img
+      src="{#user.profile_pic.url#}"
+      class="mx-2 rounded-circle my-auto"
+      height="20"
+      width="20"
+      alt=""
+      loading="lazy"
+    />
+    <input
+      name="comentario"
+      class="form-control  my-auto mx-2"
+      placeholder="Añadir un comentario..."
+    />
+    <div>
+      <button
+        class="btn btn-primary btn-sm my-auto btn-block border comment-button"
+        {#data-producto="{{producto.id}}"#}
+        type="submit"
+      >
+        Publicar
+      </button>
+    </div>
+  </div>
+</form>
+
+</div>
   <!--a href="{% url 'editar_producto' producto.id %}">Editar</a>
   <a href="{% url 'eliminar_producto' producto.id %}">Eliminar</a>
   <a href="{% url 'listar_producto' %}">Volver a la lista de productos</a-->

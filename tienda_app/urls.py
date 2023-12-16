@@ -48,4 +48,7 @@ urlpatterns = [
 
     path('submit_rating/<int:producto_id>/', views.submit_rating, name='submit_rating'),
 
+    path('submit_comment/<int:producto_id>/', views.comment, name='submit_comment'), # I can't think of a better name
+
+
 ]

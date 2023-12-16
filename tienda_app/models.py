@@ -62,7 +62,7 @@ class Producto(models.Model):
         return self.nombreProducto
 
     @property
-    def get_commentarios(self):
+    def get_comentarios(self):
         own_commentarios = Comment.objects.filter(producto=self)
         return own_commentarios
 

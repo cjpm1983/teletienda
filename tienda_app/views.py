@@ -1,4 +1,4 @@
-from .models import Tienda, Producto, Rating, UserProfile
+from .models import Tienda, Producto, Rating, UserProfile, Comment
 from .forms import TiendaForm, ProductoForm, CustomUserCreationForm, ProfileForm
 
 from django.contrib.sites.shortcuts import get_current_site
@@ -205,6 +205,42 @@ def submit_rating(request, producto_id):
 
     return JsonResponse({'success': True})
 
+@login_required(login_url='register')
+def like(request):
+    producto_id = request.GET['producto_id']
+    producto = get_object_or_404(Producto, identifier=producto_id)
+    if request.user in producto.likes.all():
+        producto.likes.remove(request.user)
+        liked=False
+    else:
+        producto.likes.add(request.user)
+        liked=True
+    producto.save
+    likes = producto.likes.count()
+    response = JsonResponse({'liked': liked, 'likes': likes})
+    return response
+
+
+@login_required(login_url='register')
+def comment(request,producto_id):
+    
+    # TODO Limitar el numero de comentarios para evitar exploit
+    
+
+    producto = get_object_or_404(Producto, id=producto_id)
+    
+    propios = Comment.objects.filter(producto=producto,usuario=request.user).count() 
+    
+    #producto.filter(nombreProducto__icontains=termino_busqueda)
+    if (propios < 15):
+        comment_data = request.GET['comentario']
+        comment = Comment(producto=producto, usuario=request.user, text=comment_data)
+        comment.save()
+        #response = JsonResponse({'comment': comment_data})
+        #return response
+        return redirect("detalle_producto",producto_id=producto_id)
+    else:
+        return redirect("listar_producto")
 
 ######################## REGISTRO ###############################################################
 
