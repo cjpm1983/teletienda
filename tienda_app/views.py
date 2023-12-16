@@ -204,8 +204,8 @@ def submit_rating(request, producto_id):
     producto.save()
 
     return JsonResponse({'success': True})
-
-@login_required(login_url='register')
+'''
+@login_required(login_url='login')
 def like(request):
     producto_id = request.GET['producto_id']
     producto = get_object_or_404(Producto, identifier=producto_id)
@@ -218,10 +218,10 @@ def like(request):
     producto.save
     likes = producto.likes.count()
     response = JsonResponse({'liked': liked, 'likes': likes})
-    return response
+    return response'''
 
 
-@login_required(login_url='register')
+@login_required(login_url='login')
 def comment(request,producto_id):
     
     # TODO Limitar el numero de comentarios para evitar exploit
