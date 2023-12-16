@@ -258,7 +258,7 @@
                   <h6>Unidad: {{ producto.unidad }}</h6>
                 </a>
                 <a class="text-reset " href="{% url 'detalle_producto' producto.id %}">
-                  <p>{{ producto.tienda }} - {{ producto.descripcion |truncatewords:50 }}</p>
+                  <p>{{ producto.tienda }} - {{ producto.descripcion |truncatewords:7 }}</p>
                 </a>
                 <h6 class="mb-3 price">{{ producto.precio }}$</h6>
               </div>
