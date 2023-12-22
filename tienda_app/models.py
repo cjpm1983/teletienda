@@ -6,9 +6,13 @@ from django.db.models import Avg
 from django_resized import ResizedImageField
 from django.utils import timezone
 
+from django.utils.html import mark_safe
+
 # Create your models here.
 class Tienda(models.Model):
     nombre = models.CharField(max_length=100)
+    imagen = ResizedImageField(size=[1000, 700], upload_to='tiendas/',default='tiendas/default.png', blank=True, null=True)
+    descripcion = models.TextField(blank=True)
     direccion = models.CharField(max_length=100,blank=True)
     correo = models.EmailField(blank=True)
     telefono = models.CharField(max_length=20,blank=True)
@@ -17,29 +21,35 @@ class Tienda(models.Model):
     provincia = models.CharField(max_length=100,blank=True)
     managers = models.ManyToManyField(User, related_name='managed_tiendas',blank=True)
 
+    def image_tag(self):
+            return mark_safe('<img src="%s" width="50" height="50" />' % (self.imagen.url))
+
+    image_tag.short_description = 'V. Previa'
+
     def __str__(self):
         return self.nombre
-
+    
+    
 class Producto(models.Model):
     tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
-    #categorias = models.ManyToManyField(Categoria, related_name='productos', blank=True)
     nombreProducto = models.CharField(max_length=100)
-    #foto = models.ImageField(upload_to='productos/',blank=True)
     foto = ResizedImageField(size=[1000, 700], upload_to='productos/',default='images/default.png', blank=True, null=True)
-
     cantidad = models.IntegerField(blank=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     unidad = models.CharField(max_length=20,blank=True)
     descripcion = models.TextField(blank=True)
-
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
     visible = models.BooleanField(default=True,
                                    verbose_name='Visible',
                                    help_text='Si el producto es visible se mostrará en la tienda online.',
                                    )
     
+    def image_tag(self):
+            return mark_safe('<img src="%s" width="48" height="48" />' % (self.foto.url))
+
+    image_tag.short_description = 'V. Previa'
+ 
     rating_avg = models.FloatField(default=0)
     rating_cnt = models.IntegerField(default=0)
 
@@ -57,15 +67,15 @@ class Producto(models.Model):
     @property
     def rating_count(self):
         return self.rating_set.count()
-    
-    def __str__(self):
-        return self.nombreProducto
 
     @property
     def get_comentarios(self):
         own_commentarios = Comment.objects.filter(producto=self)
         return own_commentarios
 
+    def __str__(self):
+        return self.nombreProducto
+    
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     telegram_username = models.CharField(max_length=50,blank=True)
