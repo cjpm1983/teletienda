@@ -64,7 +64,7 @@ class ProductoAdmin(admin.ModelAdmin):
     #update_visible.short_description = 'Actualizar visibilidad'
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('producto', 'usuario','text')
+    list_display = ('producto', 'usuario','text','parent_comment')
     actions = ['update_aprobado']
 
     def get_queryset(self, request):

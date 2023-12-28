@@ -98,6 +98,9 @@ class Comment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     created_date = models.DateTimeField(default=timezone.now)
     approved_comment = models.BooleanField(default=False)
+    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    #replies = models.ManyToManyField('self', related_name='parent_comment', blank=True)
+     
 
     def __str__(self):
         return f'{self.usuario}-->{self.text} '

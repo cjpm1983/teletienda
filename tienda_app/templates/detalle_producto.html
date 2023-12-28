@@ -196,6 +196,9 @@
           {% for comment in producto.get_comentarios %}
           <div class="card">
             <div class="mb-0 row content ">
+              {% if comment.parent_comment %}
+              <b><p>En respuesta a: {{ comment.parent_comment }}</p></b>
+                {% endif %}
               <strong class="col-sm-2">{{ comment.usuario }}:</strong> 
               <p class="col-sm-9">{{ comment.text }}</p> 
             </div>

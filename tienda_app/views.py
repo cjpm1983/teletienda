@@ -232,9 +232,12 @@ def comment(request,producto_id):
     propios = Comment.objects.filter(producto=producto,usuario=request.user).count() 
     
     #producto.filter(nombreProducto__icontains=termino_busqueda)
+    #limitamos los propios para que no haya spamers llenando de comentarios cada lugar
     if (propios < 15):
         comment_data = request.GET['comentario']
         comment = Comment(producto=producto, usuario=request.user, text=comment_data)
+        if request.GET['parent_comment']:
+            comment.parent_comment = request.GET['parent_comment']
         comment.save()
         #response = JsonResponse({'comment': comment_data})
         #return response
