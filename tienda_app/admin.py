@@ -66,6 +66,7 @@ class ProductoAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('producto', 'usuario','text','parent_comment')
     actions = ['update_aprobado']
+    #search_fields = ('usuario')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -67,6 +67,7 @@ class Producto(models.Model):
     @property
     def rating_count(self):
         return self.rating_set.count()
+        
 
     @property
     def get_comentarios(self):

@@ -55,6 +55,7 @@
     </div>
     <div class="col-sm-6">
       <h2>{{ producto.nombreProducto }}</h2>
+      <p>Tienda: {{ producto.tienda }}</p>
       <p>Precio: ${{ producto.precio }}</p>
       <p>Unidad: {{ producto.unidad }}</p>
       <p>{{ producto.descripcion }}</p>
@@ -63,10 +64,89 @@
       <hr class="mt-0"/>
 
 
+
+      <div id="Comentario" class="mt-10" >
+        
+
+        <form class="row" id="comment_form" action="{% url "submit_comment" producto.id %}" style="display:none" >
+          {% csrf_token %}
+
+          <div class="d-flex justify-content-center">
+
+            <input name="comentario" class="form-control  my-auto mx-2" placeholder="Añadir un comentario..." />
+            
+            <div>
+              <button class="btn btn-primary btn-sm my-auto btn-block border comment-button" type="submit">
+                Publicar
+              </button>
+            </div>
+          </div>
+        </form>
+
+
+        <p>
+          <button class="btn btn-success mt-3" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Mostrar Comentarios
+          </button>
+        </p>
+        <div class="collapse" id="collapseExample">
+          <div class="card card-body">
+            
+                  
+              <div id="comantarioslst" class="mb-1 border-0">
+                {% for comment in producto.get_comentarios %}
+                <div class="card">
+                  {% if comment.parent_comment %}
+                    <b class="bg-info text-light"><p>En respuesta a: {{ comment.parent_comment }}</p></b>
+                  {% endif %}
+                  <div class="mb-0 d-flex justify-content-between content ">
+                    <strong class="">{{ comment.usuario }}:</strong> 
+                    <p class="">{{ comment.text }}</p> 
+                    <span class="btn btn-primary" id="responder_{{comment.id}}"><i class="fa fa-reply"></i>&nbsp;Responder</span>
+                  </div>
+                </div>
+                <hr clas='border-0'/>
+                
+                <script>
+
+                  $("#responder_{{comment.id}}").click(function() {
+                    
+                    thtml = "Hello"  
+                    vhtml = "                                                                       \
+                    <div id='replicando' class='row  p-1 m-2 bg-info text-light'>                    \
+                      <input type='hidden' name='parent_comment' value='{{comment.id}}'>                           \
+                      <div  style='max-width:10%;'><i class='fa fa-reply'></i></div>                   \  \
+                      <div  style='max-width:80%;'>    \                                                \
+                          <span><b>Respondiendo a:&nbsp;</b> {{comment}}</span>                \
+                      </div>                                                                              \
+                      <div  style='max-width:5%;'>x</div>                                                  \
+                    </div>    \                                                                              \
+                    ";                                                                          
+                    //primero eliminar si existe el div
+                    $("#replicando").remove();
+                    //luego agregarlo
+                      $("#comment_form").prepend(vhtml);
+                      $("#comment_form").show()
+
+                      //$("#responder_{{comment.id}}").hide();
+                 });
+                </script>
+                
+                {% endfor %}
+              </div>
+            
+          </div>
+        </div>
+      
+      
+
+      </div>
+
+
       {% comment %} <h3>{{ producto.rating_set.filter(usuario=request.user).first.stars }}</h3> {% endcomment %}
 
 
-         <!--########## LIKES #################--
+         <!--########## LIKES #################
 
          <div id="like_{{ producto.id }}"class='d-flex justify-content-end col-4 p-0'>
           <a
@@ -88,6 +168,11 @@
 
 
     </div>
+
+
+
+ 
+
   </div>
 </div>
 
@@ -114,46 +199,126 @@
         <!--rating-->
         <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ rating|default_if_none:"0" }}"></div>
         <p id="rating_value_{{ producto.id }}"></p>
+
+        <!--Formulario de comentario-->
+        <div class="row" id="comment_form_2" action="{% url "submit_comment" producto.id %}" >
+          {% csrf_token %}
+
+          <div class="d-flex justify-content-center">
+
+            <input id="comentario2" name="comentario2" class="form-control  my-auto mx-2" placeholder="Añadir un comentario..." />
+            
+            <div>
+              <button class="btn btn-primary btn-sm my-auto btn-block border comment-button" id="btn_send_c">
+                Publicar
+              </button>
+            </div>
+          </div>
+        </form>
+        <!--fin del formulario de comentario-->
         
         {% if user.is_authenticated %}
         <script>
+
           $(function() {
-              var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
-  
-              $("#rating_{{ producto.id }}").rateYo({
-                  rating: rat2,                  
-                  readOnly: false,
-                  starWidth: "30px",
-                  fullStar: true,
-                  onSet: function(rating, rateYoInstance) {
-                    $.ajax({
-                        url: "{% url 'submit_rating' producto.id %}",  // Replace 'submit_rating' with the actual URL name for your view
-                        method: "POST",
-                        data: {
-                            rating: rating,
-                            csrfmiddlewaretoken: "{{ csrf_token }}"
-                        },
-                        success: function(response) {
-                            $("#rating_value_{{ producto.id }}").text("Rating: " + rating + "/5");
-                            $("#rating_value").text("Rating: " + rating + "/5");
-                            $("#showrating").rateYo("option", "rating", rating);
-                            
-                            //$("#ratingModal").modal('toggle'); 
-                            $('#ratingModal').hide();
-                            $('.modal-backdrop').hide();
-                            alert("Calificación recibida, muchas gracias!")
-                            
-                        },
-                        error: function(xhr, status, error) {
-                            console.log(error);
-                            $("#rating_value_{{ producto.id }}").text(error);
-                        }
-                    });
+            var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
+            
+            
+            $("#rating_{{ producto.id }}").rateYo({
+              rating: rat2,                  
+              readOnly: false,
+              starWidth: "30px",
+              fullStar: true,
+
+              onSet: function(rating,rateYoInstance){
+                rat3 = rating;
+              }
+              /*
+              onSet: function(rating, rateYoInstance) {
+                $.ajax({
+                  url: "{% url 'submit_rating' producto.id %}",  // Replace 'submit_rating' with the actual URL name for your view
+                  method: "POST",
+                  data: {
+                    rating: rating,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                  },
+                  success: function(response) {
+                    $("#rating_value_{{ producto.id }}").text("Rating: " + rating + "/5");
+                    $("#rating_value").text("Rating: " + rating + "/5");
+                    $("#showrating").rateYo("option", "rating", rating);
+                    
+                    //$("#ratingModal").modal('toggle'); 
+                    $('#ratingModal').hide();
+                    $('.modal-backdrop').hide();
+                    alert("Calificación recibida, muchas gracias!")
+                    
+                  },
+                  error: function(xhr, status, error) {
+                    console.log(error);
+                    $("#rating_value_{{ producto.id }}").text(error);
+                  }
+                });
+              }*/ // on set
+              
+            });
+
+            //$("#rating_value_{{ producto.id }}").text("Rating: " + rat2 + "/5");
+
+          //});
+          
+          //$(document).ready(function(){
+
+            var rat3 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
+            
+            //envio del formulario del modal de calificacion
+            $("#btn_send_c").click(function() {
+              
+              var com = $("#comentario2").val();
+              alert("rating -> "+rat3+" "+com)
+              
+              $.ajax({
+                url: "{% url 'submit_rating' producto.id %}",  
+                method: "POST",
+                data: {
+                  rating: rat3,
+                  comment: com,
+                  csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function(response) {
+                  $("#rating_value_{{ producto.id }}").text("Rating: " + rat3 + "/5");
+                  $("#rating_value").text("Rating: " + rat3 + "/5");
+                  $("#showrating").rateYo("option", "rating", rat3);
+
+                  $("#collapseExample").show();
+                  
+                  $("#comantarioslst").append(" \
+                     <p id='nuevoc' class='bg-light text-dark'> <b>SU comentario:<b> " + com + " \
+                     </p>");
+                  
+                  $('html, body').animate({
+                          scrollTop: $("#nuevoc").offset().top
+                      }, 2000);
+                      
+
+                  
+                  //$("#ratingModal").modal('toggle'); 
+                  
+                  $('#ratingModal').hide();
+                  $('.modal-backdrop').hide();
+                  alert("Calificación recibida, muchas gracias!")
+                  
+                },
+                error: function(xhr, status, error) {
+                  console.log(error);
+                  $("#rating_value_{{ producto.id }}").text(error);
                 }
-              });
-  
-              $("#rating_value_{{ producto.id }}").text("Rating: " + rat2 + "/5");
-          });
+                    });//ajax
+                  });//btn click envio del modal
+                  
+                });//fin del document.ready
+                
+                
+
       </script>
       {% endif %}
       {% if not user.is_authenticated %}
@@ -181,64 +346,6 @@
 
 
 <br>
-<div id="Comentario" class="card mx-4">
-        
-  <p>
-    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-      Comentarios
-    </button>
-  </p>
-  <div class="collapse" id="collapseExample">
-    <div class="card card-body">
-      
-            
-        <div class="mb-1 border-0">
-          {% for comment in producto.get_comentarios %}
-          <div class="card">
-            <div class="mb-0 row content ">
-              {% if comment.parent_comment %}
-              <b><p>En respuesta a: {{ comment.parent_comment }}</p></b>
-                {% endif %}
-              <strong class="col-sm-2">{{ comment.usuario }}:</strong> 
-              <p class="col-sm-9">{{ comment.text }}</p> 
-            </div>
-          </div>
-          <hr clas='border-0'/>
-          {% endfor %}
-        </div>
-      
-    </div>
-  </div>
-
-
-
-<form class="row" id="comment_form" action="{% url "submit_comment" producto.id %}">
-  {% csrf_token %}
-  <div class="d-flex justify-content-center">
-    <img
-      src="{#user.profile_pic.url#}"
-      class="mx-2 rounded-circle my-auto"
-      height="20"
-      width="20"
-      alt=""
-      loading="lazy"
-    />
-    <input
-      name="comentario"
-      class="form-control  my-auto mx-2"
-      placeholder="Añadir un comentario..."
-    />
-    <div>
-      <button
-        class="btn btn-primary btn-sm my-auto btn-block border comment-button"
-        {#data-producto="{{producto.id}}"#}
-        type="submit"
-      >
-        Publicar
-      </button>
-    </div>
-  </div>
-</form>
 
 </div>
   <!--a href="{% url 'editar_producto' producto.id %}">Editar</a>

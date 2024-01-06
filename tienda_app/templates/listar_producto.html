@@ -35,7 +35,7 @@
       <!-- Dropdown Registro-->
     {% if user.is_authenticated %}
     <div class="dropdown col-sm-1" style="">
-      <button class="btn btn-secondary dropdown-toggle col-sm-3" type="button" id="userDropdown" data-mdb-toggle="dropdown"
+      <button class="btn btn-info rounded-circle pl-5 dropdown-toggle col-sm-3" type="button" id="userDropdown" data-mdb-toggle="dropdown"
         aria-expanded="false">
         {{ user.username|first|upper }}
       </button>

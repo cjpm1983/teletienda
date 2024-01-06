@@ -187,18 +187,30 @@ def detalle_producto(request, producto_id):
 
 def submit_rating(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
-    rating = int(request.POST.get('rating', 0))
-    
+    rating = int(request.POST.get('rating', -1))
+    comment = request.POST.get('comment', "")
     # Create or update the rating for the current user and product
-    rating_obj, created = Rating.objects.update_or_create(
-        producto=producto,
-        usuario=request.user,
-        defaults={'stars': rating}
-    )
+    
+    if (rating>=0):
+        rating_obj, created = Rating.objects.update_or_create(
+            producto=producto,
+            usuario=request.user,
+            defaults={'stars': rating}
+        )
+        
+    if (comment!=""):  
+        # Create or update the comment for the current user and product
+        comment_obj, created = Comment.objects.get_or_create(
+            producto=producto,
+            usuario=request.user,
+            text = comment,
+        )
+        
 
     # Calculate the new average rating for the product
     #new_average_rating = Rating.objects.filter(producto=producto).aggregate(avg_rating=Avg('stars'))['avg_rating']
     # Update the average rating of the product
+    #producto.comment_cnt = producto.comment_count
     producto.rating_avg = producto.rating_average
     producto.rating_cnt = producto.rating_count
     producto.save()
@@ -237,7 +249,7 @@ def comment(request,producto_id):
         comment_data = request.GET['comentario']
         comment = Comment(producto=producto, usuario=request.user, text=comment_data)
         if request.GET['parent_comment']:
-            comment.parent_comment = request.GET['parent_comment']
+            comment.parent_comment = Comment.objects.get(id=request.GET['parent_comment'])
         comment.save()
         #response = JsonResponse({'comment': comment_data})
         #return response
