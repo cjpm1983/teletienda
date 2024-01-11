@@ -121,7 +121,9 @@ def listar_producto(request):
 
     if termino_busqueda:
         productos = productos.filter(nombreProducto__icontains=termino_busqueda)
-    
+    else:
+        termino_busqueda = "" # por razon de que se escibe None en la query del browser
+        
     # Paginar resultados
     mostrar = int(request.GET.get('mostrar', 5))
     paginator = Paginator(productos, mostrar)
