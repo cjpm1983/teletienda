@@ -103,9 +103,11 @@ class Comment(models.Model):
     #replies = models.ManyToManyField('self', related_name='parent_comment', blank=True)
      
 
-    def __str__(self):
-        return f'{self.usuario}-->{self.text} '
-    
+    # def __str__(self):
+    #     return f'{self.usuario}-->{self.text} '
+    def related_rating(self):
+        return Rating.objects.filter(producto=self.producto,usuario=self.usuario).first()
+
     def approve(self):
         self.approved_comment = True
         self.save()

@@ -123,7 +123,7 @@ def listar_producto(request):
         productos = productos.filter(nombreProducto__icontains=termino_busqueda)
     else:
         termino_busqueda = "" # por razon de que se escibe None en la query del browser
-        
+
     # Paginar resultados
     mostrar = int(request.GET.get('mostrar', 5))
     paginator = Paginator(productos, mostrar)
@@ -202,12 +202,19 @@ def submit_rating(request, producto_id):
         
     if (comment!=""):  
         # Create or update the comment for the current user and product
-        comment_obj, created = Comment.objects.get_or_create(
-            producto=producto,
-            usuario=request.user,
-            text = comment,
-        )
-        
+        main_c = Comment.objects.filter(parent_comment__isnull=True,usuario=request.user,producto=producto).first()
+        commentario = Comment(producto=producto, usuario=request.user, text=comment)
+
+        if not main_c:
+                commentario.save()
+            #si no actualizar
+        else:
+                main_c.producto = commentario.producto
+                main_c.usuario = commentario.usuario
+                main_c.text = commentario.text
+                main_c.created_date = commentario.created_date
+                main_c.save()
+              
 
     # Calculate the new average rating for the product
     #new_average_rating = Rating.objects.filter(producto=producto).aggregate(avg_rating=Avg('stars'))['avg_rating']
@@ -248,11 +255,29 @@ def comment(request,producto_id):
     #producto.filter(nombreProducto__icontains=termino_busqueda)
     #limitamos los propios para que no haya spamers llenando de comentarios cada lugar
     if (propios < 15):
-        comment_data = request.GET['comentario']
+        comment_data = request.POST['comentario']
         comment = Comment(producto=producto, usuario=request.user, text=comment_data)
-        if request.GET['parent_comment']:
-            comment.parent_comment = Comment.objects.get(id=request.GET['parent_comment'])
-        comment.save()
+        
+        #si tiene parent_coment es una respuesta, sino se trata del comentario principal donde se califica, 
+        #debe existir solo uno por usuario y producto
+        main_c = None
+        if request.POST.get('parent_comment') is not None:
+            comment.parent_comment = Comment.objects.get(id=request.POST['parent_comment'])
+            comment.save()
+        else:
+            #como comprobar los vacios
+            main_c = Comment.objects.filter(parent_comment__isnull=True,usuario=request.user,producto=producto).first()
+
+            if not main_c:
+                comment.save()
+            #si no actualizar
+            else:
+                main_c.producto = comment.producto
+                main_c.usuario = comment.usuario
+                main_c.text = comment.text
+                main_c.created_date = comment.created_date
+                main_c.save()
+
         #response = JsonResponse({'comment': comment_data})
         #return response
         return redirect("detalle_producto",producto_id=producto_id)
