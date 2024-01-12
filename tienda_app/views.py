@@ -93,34 +93,34 @@ def listar_producto(request):
         tienda = Tienda.objects.filter(nombre=request.GET.get('tienda')).first()
         if cprecio == 'on':
             # Ordenar por precio
-            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('precio')
+            productos = Producto.objects.filter(visible=True, tienda__nombre=request.GET.get('tienda')).order_by('precio')
             if ccalif == 'on':
                 # Ordenar por precio y calificación
-                productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('precio', '-rating_avg')
+                productos = Producto.objects.filter(visible=True,tienda__nombre=request.GET.get('tienda')).order_by('precio', '-rating_avg')
         elif ccalif == 'on':
             # Ordenar solo por calificación
-            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('-rating_avg')
+            productos = Producto.objects.filter(visible=True,tienda__nombre=request.GET.get('tienda')).order_by('-rating_avg')
         else:
             # Ordenar por ID
-            productos = Producto.objects.filter(tienda__nombre=request.GET.get('tienda')).order_by('id')
+            productos = Producto.objects.filter(visible=True,tienda__nombre=request.GET.get('tienda')).order_by('id')
     else:
         # Si no se especifica tienda, mostrar todos los productos
         tienda = Tienda(nombre="Todas las tiendas", id=-1)
         if cprecio == 'on':
             # Ordenar por precio
-            productos = Producto.objects.all().order_by('precio')
+            productos = Producto.objects.filter(visible=True).order_by('precio')
             if ccalif == 'on':
                 # Ordenar por precio y calificación
-                productos = Producto.objects.all().order_by('precio', '-rating_avg')
+                productos = Producto.objects.filter(visible=True).order_by('precio', '-rating_avg')
         elif ccalif == 'on':
             # Ordenar solo por calificación
-            productos = Producto.objects.all().order_by('-rating_avg')
+            productos = Producto.objects.filter(visible=True).order_by('-rating_avg')
         else:
             # Ordenar por ID
-            productos = Producto.objects.all().order_by('id')
+            productos = Producto.objects.filter(visible=True).order_by('id')
 
     if termino_busqueda:
-        productos = productos.filter(nombreProducto__icontains=termino_busqueda)
+        productos = productos.filter(visible=True, nombreProducto__icontains=termino_busqueda)
     else:
         termino_busqueda = "" # por razon de que se escibe None en la query del browser
 
