@@ -112,6 +112,22 @@ class Comment(models.Model):
         self.approved_comment = True
         self.save()
     
+class Preferencia (models.Model):
+    titulo = models.CharField(null=True,blank=True,max_length=100)
+    descripcion = models.TextField(null=True,blank=True)
+    vnumerico = models.IntegerField(null=True,blank=True,verbose_name="Valor si es un número") 
+    vtexto = models.CharField(null=True,blank=True,verbose_name="Valor si es un texto",max_length=255)
+    
+
+    class Meta:
+        verbose_name = ("")
+        verbose_name_plural = ("Preferencias")
+
+    def __str__(self):
+        return self.name
+
+
+
 
 '''
 5. Para acceder al campo telegram_username de un usuario, puedes utilizar la relación inversa desde el modelo User al modelo UserProfile. Aquí hay un ejemplo usando el modelo User:
