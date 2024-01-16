@@ -8,6 +8,8 @@ from . import views
 
 from .views import pushhome, send_push
 
+
+
 router = routers.DefaultRouter()
 router.register(r'tiendas', TiendaViewSet)
 router.register(r'productos', ProductoViewSet)
@@ -49,5 +51,5 @@ urlpatterns = [
 
     path('submit_comment/<int:producto_id>/', views.comment, name='submit_comment'), # I can't think of a better name
 
-
+    path('map', views.maps, name = 'maps'),
 ]
