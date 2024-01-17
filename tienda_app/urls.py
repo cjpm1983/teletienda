@@ -51,5 +51,8 @@ urlpatterns = [
 
     path('submit_comment/<int:producto_id>/', views.comment, name='submit_comment'), # I can't think of a better name
 
+    #este es independiente
+    path('map/<int:tienda_id>/', views.map_view, name='tiendas_map'),
+    #general
     path('map', views.maps, name = 'maps'),
 ]

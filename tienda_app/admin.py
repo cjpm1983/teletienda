@@ -3,6 +3,11 @@ from .models import Tienda, Producto, Rating, UserProfile, Comment, Preferencia
 from django.contrib.auth.models import User
 from django.db import models
 
+import folium
+from django.urls import reverse, path
+from django.http.response import HttpResponse
+from django.utils.html import format_html
+
 
 
 class ProductoAdmin(admin.ModelAdmin):
@@ -89,12 +94,26 @@ class CommentAdmin(admin.ModelAdmin):
         self.message_user(request, '{} comentarios actualizados'.format(updated_count))
 
 class TiendaAdmin(admin.ModelAdmin):
-    fields = ['nombre','image_tag','imagen','ciudad','provincia','direccion','descripcion','correo','telefono','encargado','managers']
+    fields = ['nombre','image_tag','imagen','ciudad','provincia','direccion','descripcion','correo','telefono','encargado','managers','latitude','longitude','get_map_url']
     list_display = ('image_tag', 'nombre','provincia',)
     list_display_links= ('image_tag', 'nombre',)
-    readonly_fields = ['image_tag']
     autocomplete_fields = ('managers',)
     filter_horizontal = ('managers',)
+
+        
+    def get_map_url(self, obj):
+        if obj.latitude and obj.longitude:
+            location_map = folium.Map(location=[obj.latitude, obj.longitude], zoom_start=15)
+            folium.Marker([obj.latitude, obj.longitude], popup=obj.nombre).add_to(location_map)
+            map_html = location_map.get_root().render()
+            return format_html('<a href="{}" target="_blank"><h3>Ver en Mapa</h3></a>', reverse('tiendas_map', args=[obj.id]))
+        return 'Debe entrar las coordenas (Latitud y Longitud) y luego guardar los cambios para poder acceder al mapa'
+
+    get_map_url.short_description = 'Mapa'
+    get_map_url.allow_tags = True
+
+    readonly_fields = ['image_tag','get_map_url']
+   
 
 
 class UserProfileAdmin(admin.ModelAdmin):

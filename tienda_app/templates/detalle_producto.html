@@ -61,7 +61,7 @@
 
     <div class="col-sm">
       <h2>{{ producto.nombreProducto }}</h2>
-      <p>Tienda: {{ producto.tienda }}</p>
+      <p>Tienda: {{ producto.tienda }}  {%if producto.tienda.latitude and producto.tienda.longitude %} - <a href="{% url 'tiendas_map' producto.tienda.id %}">Ver en el mapa</a>{%endif%}</p>
       <p>Precio: ${{ producto.precio }}</p>
       <p>Unidad: {{ producto.unidad }}</p>
       <p>{{ producto.descripcion }}</p>

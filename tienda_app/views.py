@@ -429,20 +429,38 @@ def send_push(request):
     
 ##########################mapas#############################################
 import folium
-def make_markers_and_add_to_map(map, house):
+def make_markers_and_add_to_map(map, tienda):
     shop_icon = folium.Icon(color='blue', # The color of the marker 
                         icon_color='white', # The color of the drawing on the marker
                         icon='shopping-bag', # The name of the marker sign (checkout Font-Awesome v4 for more icon signs)
                         prefix='fa',
                         angle=0)
     folium.Marker(
-            location = [house.latitude, house.longitude],
-            popup = house.description,
-            tooltip = house.title,
+            location = [tienda.latitude, tienda.longitude],
+            popup = tienda.descripcion,
+            tooltip = tienda.nombre,
             icon = shop_icon
             #draggable=True
         ).add_to(map)
     
+def map_view(request, tienda_id):
+        tienda = get_object_or_404(Tienda, pk=tienda_id)
+        map = folium.Map(location=[22.398, -79.960], # lat and lon of the starting point
+                 width="50%", # width of the map
+                 height="50%", # height of the map
+                 zoom_start=15, # the staring zoom
+                 tiles="OpenStreetMap", # desired tile for the map respresentation
+                 zoom_control=True) # controls for zoom level (True by default)
+        
+        make_markers_and_add_to_map(map, tienda)
+        
+        map = map._repr_html_()
+        context = {
+            'map': map,
+
+            }
+        return render(request, 'map/maps.html', context)
+        
 def maps(request):
         #coordenadas = list(Coordenadas.objects.values_list('lat','lon'))[-1]
 
@@ -459,7 +477,7 @@ def maps(request):
                         angle=0) # Rotation for the marker sign
 
         first_marker = folium.Marker(location=[22.398, -79.960], # Latitude and Longitude of Marker
-                    popup='this is my first marker! ', # Label for the Marker
+                    popup='mipyme Fe del valle ', # Label for the Marker
                     tooltip='first marker', # Display a text when hovering over the object
                     icon=cloud_icon, # The Icon plugin to use to render the marker
                     draggable=True) # Set to True to be able to drag the marker around the map

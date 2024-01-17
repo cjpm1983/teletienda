@@ -20,6 +20,9 @@ class Tienda(models.Model):
     ciudad = models.CharField(max_length=100,blank=True)
     provincia = models.CharField(max_length=100,blank=True)
     managers = models.ManyToManyField(User, related_name='managed_tiendas',blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+
 
     def image_tag(self):
             return mark_safe('<img src="%s" width="50" height="50" />' % (self.imagen.url))
