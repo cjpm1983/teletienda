@@ -19,6 +19,66 @@
   .sale-badge {
     background-color: #E53935
   }
+
+
+  .pill {
+    display:flex;
+    justify-content:center;
+    max-height:48px
+  }
+  
+  .pill-left {
+    background-color: #e4e4e4;
+    border-radius: 10px 0px 0px 10px;
+    /*color: #e4e4e4;*/
+  }
+
+  .pill-right {
+    background-color: white;
+    border-radius: 0px 10px 10px 0px;
+    /*color: #white;*/
+  }
+
+  
+  .pills-left {
+    background-color: white;
+    border-radius: 10px 0px 0px 10px;
+    /*color: white;*/
+  }
+  
+  .pills-right {
+    background-color: #e4e4e4;
+    border-radius: 0px 10px 10px 0px;
+    /*color: #e4e4e4;*/
+  }
+
+  .fa-search{
+    color: black;
+    font-size: initial;
+  }
+
+  
+  .pill-right select, .pill-left p{
+    border: 1px solid transparent;
+    margin:0;
+    background:transparent;
+  }
+
+  .pill-right select:focus,.pill-right select:focus-visible{
+    border-color: white;
+    box-shadow: none;
+  }
+  .selectores{
+    display: flex;
+    justify-content: end;
+  }
+  .orden{
+    color:white;
+    list-style-type: none;
+  }
+  .cabecerasuperior{
+    background-color:#00a999;
+  }
 </style>
 
 
@@ -26,36 +86,50 @@
 <!--Main layout-->
 <main>
   <div class="container">
-    <div class="p-2 container-fluid " style="background-color: #607D8B">
-      <div class="row">
-        <!--img src={% static 'shop.png' %} class="col-sm img-thumbnail"-->
-        <h1 class="col-sm-10" style="color:white;display:flex; justify-content:center;">Teletienda</h1>
+    <div class="container-fluid cabecerasuperior" >
+      <div class="row p-2 ">
+        
+        <!--img src={% static url 'shop.png' %} class="col-md-1 img-thumbnail"-->
+        
+        <div  class="form-inline row col-md-5 pill">
+          <input name="searchv" class="col-md-8 pills-left" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." type="search" id="searchv">
+          <!--span class="input-group-append col-md-4 pill-right">
+            <button class="btn bg-white border-bottom-0 border " type="button">
+              
+            </button>
+            
+          </span-->
+          <button id="enviarbuscar" type="button" class="btn btn-primary col-md-4 pills-right">
+            <span class="badge  ms-2"><i class="fa fa-search"></i></span>
+          </button>
+        </div>
+        
+        <h1 class="col-md-3" style="color:white;display:flex; justify-content:center;">Teletienda</h1>
 
-
-      <!-- Dropdown Registro-->
-    {% if user.is_authenticated %}
-    <div class="dropdown col-sm-1" style="">
-      <button class="btn btn-info rounded-circle pl-5 dropdown-toggle col-sm-3" type="button" id="userDropdown" data-mdb-toggle="dropdown"
-        aria-expanded="false">
-        {{ user.username|first|upper }}
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="userDropdown">
-        <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
-        <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
-      </ul>
-    </div>
-    {% else %}
-    <div class="dropdown col-sm-1" style="">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
-        aria-expanded="false">
-        Registro
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="registerDropdown">
-        <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
-        <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
-      </ul>
-    </div>
-    {% endif %}
+        <!-- Dropdown Registro-->
+        {% if user.is_authenticated %}
+        <div class="dropdown col-sm-1" style="">
+          <button class="btn btn-info rounded-circle pl-5 dropdown-toggle col-sm-3" type="button" id="userDropdown" data-mdb-toggle="dropdown"
+            aria-expanded="false">
+            {{ user.username|first|upper }}
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
+            <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
+          </ul>
+        </div>
+        {% else %}
+        <div class="dropdown col-sm-1" style="">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
+            aria-expanded="false">
+            Registro
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="registerDropdown">
+            <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
+            <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
+          </ul>
+        </div>
+        {% endif %}
 
 
     </div>
@@ -81,19 +155,19 @@
       <!-- Dropdown -->
 
      
-     <form id="navform" class="form-inline row col-lg-12" method="get" action="">
+      <form id="navform" class="form-inline row col-md-5 pill" method="get" action="">
         
-        <div class="input-group  col-sm-6 my-2">
-            <input name="search" onchange="this.form.submit()" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." type="search" id="example-search-input">
+        <div class="col-md-3 my-2">
+          <input name="search" class="col-md-8 pills-left" onchange="this.form.submit()" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." type="search" id="searcho">
             <span class="input-group-append">
-                <button class="btn bg-white border-bottom-0 border " type="button">
+                <button id="" class="btn bg-white border-bottom-0 border " type="button">
                     <i class="fa fa-search"></i>
                 </button>
             </span>
             
         </div>
 
-        <ul class="me-auto mb-2 mb-2  col-sm-6" style="color:white; list-style-type: none;" >
+        <ul class="orden col-md-3" >
           
           <li class="nav-item">
             <div class="form-check form-switch">
@@ -114,55 +188,65 @@
           
         </ul>
 
-      <div class="col-sm-4">
-        <div class="form-group  col-sm">
-          <select class="form-control"  name="tienda" id="tiendasSelect" onchange="this.form.submit()">
-              <option {% if shop.nombre == "Todas las tiendas" %}selected=""{% endif %} value="">
-                <!--img src="/media/tiendas/t1_3LCzpmg.png"/-->  Todas las tiendas
-              </option>
-              {% for tienda in tiendas %}
-                  <option {% if shop.nombre == tienda.nombre %}selected=""{% endif %} value="{{ tienda.nombre }}">
-                    
-                    {{tienda.nombre}}
-                    
-                  </option>
-              {% endfor %}
-          </select>
+      <!--div class="selectores col-md-4"-->
+
+        <div class="pill col-md-4">
+          <div class="form-group badge pill-left "><p class="form-control">Tienda</p></div>
+          <div class="form-group badge pill-right ">
+                <select class="form-control"  name="tienda" id="tiendasSelect" onchange="this.form.submit()">
+                    <option {% if shop.nombre == "Todas las tiendas" %}selected=""{% endif %} value="">
+                      <!--img src="/media/tiendas/t1_3LCzpmg.png"/-->  Todas las tiendas
+                    </option>
+                    {% for tienda in tiendas %}
+                        <option {% if shop.nombre == tienda.nombre %}selected=""{% endif %} value="{{ tienda.nombre }}">
+                          
+                          {{tienda.nombre}}
+                          
+                        </option>
+                    {% endfor %}
+                </select>
+              </div>
         </div>
 
 
-
-        <!--div class="dropdown" >
-          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown link
-          </a>
-        
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" onchange="this.form.submit()">
-            
-            
-            <li> 
-              <a class="avatar" href="~/Account/Manage">
-                  <img class="img-circle img-responsive" src="http://placehold.it/75x75" alt=""> <span class="bold">joe_user@someplace.com</span>
-              </a>
-            </li>
-
-            <li role="separator" class="divider"></li>
-            
-            {% for tienda in tiendas %}
-                <a class="dropdown-item" href="#">{{tienda.image_tag}}Action</a>
-                
-            {%endfor%}
+        <div class="pill col-md-3">
+          <div class="form-group badge pill-left "><p class="form-control">Mostrar</p></div>
+          <div class="form-group badge pill-right ">
+                <select class="form-control" name="mostrar" id="mostrar" onchange="this.form.submit()">
+                    <option value="5" {% if mostrar == 5 %}selected{% endif %}>5 productos</option>
+                    <option value="50" {% if mostrar == 50 %}selected{% endif %}>50 productos</option>
+                    <option value="100" {% if mostrar == 100 %}selected{% endif %}>100 productos</option>
+                </select>
+            </div>
           </div>
-        </div-->
 
 
-        <div class="form-group col-sm">
-            <select class="form-control" name="mostrar" id="mostrar" onchange="this.form.submit()">
-                <option value="5" {% if mostrar == 5 %}selected{% endif %}>5 productos</option>
-                <option value="50" {% if mostrar == 50 %}selected{% endif %}>50 productos</option>
-                <option value="100" {% if mostrar == 100 %}selected{% endif %}>100 productos</option>
-            </select>
+        <div class="pill col-md-4">
+            <div class="form-group badge pill-left "><p class="form-control">Provincia</p></div>
+            <div class="form-group badge pill-right ">
+              <select class="form-control" name="provincia" id="provincia" onchange="this.form.submit()">
+                  <option value="" {% if not provincia %}selected{% endif %}>Todas</option>
+                  <option value="pinar_del_rio" {% if provincia == "pinar_del_rio" %}selected{% endif %}>Pinar del Río</option>
+                  <option value="artemisa" {% if provincia == "artemisa" %}selected{% endif %}>Artemisa</option>
+                  <option value="la_habana" {% if provincia == "la_habana" %}selected{% endif %}>La Habana</option>
+                  <option value="mayabeque" {% if provincia == "mayabeque" %}selected{% endif %}>Mayabeque</option>
+                  <option value="matanzas" {% if provincia == "matanzas" %}selected{% endif %}>Matanzas</option>
+                  <option value="cienfuegos" {% if provincia == "cienfuegos" %}selected{% endif %}>Cienfuegos</option>
+                  <option value="villa_clara" {% if provincia == "villa_clara" %}selected{% endif %}>Villa Clara</option>
+                  <option value="sancti_spiritus" {% if provincia == "sancti_spiritus" %}selected{% endif %}>Sancti Spíritus</option>
+                  <option value="ciego_de_avila" {% if provincia == "ciego_de_avila" %}selected{% endif %}>Ciego de Ávila</option>
+                  <option value="camaguey" {% if provincia == "camaguey" %}selected{% endif %}>Camagüey</option>
+                  <option value="las_tunas" {% if provincia == "las_tunas" %}selected{% endif %}>Las Tunas</option>
+                  <option value="granma" {% if provincia == "granma" %}selected{% endif %}>Granma</option>
+                  <option value="holguin" {% if provincia == "holguin" %}selected{% endif %}>Holguín</option>
+                  <option value="santiago_de_cuba" {% if provincia == "santiago_de_cuba" %}selected{% endif %}>Santiago de Cuba</option>
+                  <option value="guantanamo" {% if provincia == "guantanamo" %}selected{% endif %}>Guantánamo</option>
+              </select>
+          </div>
         </div>
+
+
+
       </div>
     </form>
 
@@ -334,6 +418,7 @@
 <!--Main layout-->
 
 <script type="text/javascript">
+  
   $(document).ready(function () {
       $('#cprecio').click(function() {
       //$('#console-event').html('Toggle: ' + $(this).prop('checked'))
@@ -344,12 +429,12 @@
       $("#navform").submit();
       //alert("fufu")
     }) 
-
-    $(".dropdown-item").click(function(e){ 
-      e.preventDefault();
-      $(this).closest("form").submit();
-  });
-
+/*
+    $("#enviarbuscar").click(function(e) {
+      $("#searcho").val = $("#searchv").val 
+      //$("#navform").submit();
+    })
+  */  
   });
   </script>
 

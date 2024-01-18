@@ -18,7 +18,24 @@ class Tienda(models.Model):
     telefono = models.CharField(max_length=20,blank=True)
     encargado = models.CharField(max_length=100,blank=True)
     ciudad = models.CharField(max_length=100,blank=True)
-    provincia = models.CharField(max_length=100,blank=True)
+    provincia_choices = [
+        ('pinar_del_rio','Pinar del Río'),
+        ('artemisa','Artemisa'),
+        ('la_habana','La Habana'),
+        ('mayabeque','Mayabeque'),
+        ('matanzas','Matanzas'),
+        ('cienfuegos','Cienfuegos'),
+        ('villa_clara','Villa Clara'),
+        ('sancti_spiritus','Sancti Spíritus'),
+        ('ciego_de_avila','Ciego de Ávila'),
+        ('camaguey','Camagüey'),
+        ('las_tunas', 'Las Tunas'),
+        ('granma','Granma'),
+        ('holguin','Holguín'),
+        ('santiago_de_cuba', 'Santiago de Cuba'),
+        ('guantanamo','Guantánamo'),
+    ]
+    provincia = models.CharField(max_length=100,blank=True, choices=provincia_choices)
     managers = models.ManyToManyField(User, related_name='managed_tiendas',blank=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)

@@ -77,7 +77,7 @@ def listar_tienda(request):
 
 ##Productos##################################################################
 
-def listar_producto(request):
+def listarr_producto(request):
     # Definir el orden por defecto
     orderby = 'id'
     
@@ -139,6 +139,65 @@ def listar_producto(request):
     # Renderizar la página con los resultados y filtros
     return render(request, 'listar_producto.html', {'page_obj': page_obj, 'mostrar': mostrar, 'tiendas': tiendas, 'shop': tienda, 'cprecio': cprecio, 'ccalif': ccalif, 'search': termino_busqueda})
 
+def listar_producto(request):
+    #Listar solo los productos en estado visible
+    productos = Producto.objects.filter(visible=True)
+
+    provincia = request.GET.get('provincia', None)
+    ciudad = request.GET.get('ciudad', None)
+    tiendaid = request.GET.get('tienda', None)
+    tienda = None
+    if tiendaid is not None:
+        tienda = Tienda.objects.filter(nombre=request.GET.get('tienda')).first()
+    #ordenar = request.GET.get('ordenar', None)
+
+     # Obtener valores de los filtros de precio y calificación
+    cprecio = request.GET.get('cprecio') if request.GET.get('cprecio') else "off"
+    ccalif = request.GET.get('ccalif') if request.GET.get('ccalif') else "off"
+    
+
+    termino_busqueda = request.GET.get('search', None)
+
+    if provincia is not None:
+        productos = productos.filter(tienda__provincia=provincia)
+    if ciudad is not None:
+        productos = productos.filter(tienda__ciudad=ciudad)
+    if tienda is not None:
+        productos = productos.filter(tienda=tienda)
+
+    #if ordenar == 'precio':
+    if cprecio == 'on':
+        productos = productos.order_by('precio')
+    if ccalif == 'on':
+        productos = productos.order_by('-rating_avg')
+
+    if termino_busqueda is not None:
+        productos = productos.filter(nombreProducto__icontains=termino_busqueda)
+
+     # Paginar resultados
+    mostrar = int(request.GET.get('mostrar', 5))
+    paginator = Paginator(productos, mostrar)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = paginator.get_page(page_number)
+    except EmptyPage:
+        page_obj = paginator.get_page(1)
+    
+    # Obtener todas las tiendas para mostrar en la página
+    tiendas = Tienda.objects.all()
+
+    return render(request, 'listar_producto.html', {
+        'page_obj': page_obj,
+        'mostrar': mostrar,
+        'tiendas': tiendas,#estos son todos los objetos tienda para el select
+        'productos': productos,
+        'provincia': provincia,
+        'ciudad': ciudad,
+        'shop': tienda,#esta es la tienda seleccionada
+        'cprecio': cprecio, 
+        'ccalif': ccalif, 
+        'search': termino_busqueda
+    })
 
 def crear_producto(request):
     if request.method == 'POST':
