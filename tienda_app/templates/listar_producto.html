@@ -91,18 +91,18 @@
         
         <!--img src={% static url 'shop.png' %} class="col-md-1 img-thumbnail"-->
         
-        <div  class="form-inline row col-md-5 pill">
-          <input name="searchv" class="col-md-8 pills-left" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." type="search" id="searchv">
+        <form id="navform" class="form-inline row col-md-5 pill" method="get" action="">
+          <input name="search" class="col-md-8 pills-left"onchange="this.form.submit()" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." type="search" id="example-search-input">
           <!--span class="input-group-append col-md-4 pill-right">
             <button class="btn bg-white border-bottom-0 border " type="button">
               
             </button>
             
           </span-->
-          <button id="enviarbuscar" type="button" class="btn btn-primary col-md-4 pills-right">
+          <button type="button" class="btn btn-primary col-md-4 pills-right" data-mdb-ripple-init >
             <span class="badge  ms-2"><i class="fa fa-search"></i></span>
           </button>
-        </div>
+        </form>
         
         <h1 class="col-md-3" style="color:white;display:flex; justify-content:center;">Teletienda</h1>
 
@@ -155,12 +155,12 @@
       <!-- Dropdown -->
 
      
-      <form id="navform" class="form-inline row col-md-5 pill" method="get" action="">
+     <div id="navformtop" class="form-inline row"  >
         
         <div class="col-md-3 my-2">
-          <input name="search" class="col-md-8 pills-left" onchange="this.form.submit()" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." type="search" id="searcho">
+            <input name="searchv"  {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." type="search" id="example-search-input">
             <span class="input-group-append">
-                <button id="" class="btn bg-white border-bottom-0 border " type="button">
+                <button id="enviarbuscar" class="btn bg-white border-bottom-0 border " type="button">
                     <i class="fa fa-search"></i>
                 </button>
             </span>
@@ -418,7 +418,6 @@
 <!--Main layout-->
 
 <script type="text/javascript">
-  
   $(document).ready(function () {
       $('#cprecio').click(function() {
       //$('#console-event').html('Toggle: ' + $(this).prop('checked'))
@@ -429,12 +428,17 @@
       $("#navform").submit();
       //alert("fufu")
     }) 
-/*
-    $("#enviarbuscar").click(function(e) {
-      $("#searcho").val = $("#searchv").val 
+
+    $("#enviarbuscar") = function(e) {
+      $("#search").val = $("#searchv").val 
       //$("#navform").submit();
-    })
-  */  
+    }
+/*
+    $(".dropdown-item").click(function(e){ 
+      e.preventDefault();
+      $(this).closest("form").submit();
+  });
+*/
   });
   </script>
 
