@@ -158,7 +158,7 @@ def listar_producto(request):
 
     termino_busqueda = request.GET.get('search', None)
 
-    if provincia is not None:
+    if provincia is not None and provincia != "":
         productos = productos.filter(tienda__provincia=provincia)
     if ciudad is not None:
         productos = productos.filter(tienda__ciudad=ciudad)
