@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 {% load static %}
+{% load webpush_notifications %}
 <html>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% webpush_header %}
     <link rel="shortcut icon" type="image/png" href="{% static 'shop.png' %}"/>
     <title>Teletienda</title>
 
@@ -37,7 +39,9 @@
 
     <!-- Contenido principal -->
     <div class="main-content">
+        {% webpush_button with_class="btn btn-outline-info" %}
         {% block content %}
+
         <!-- Aquí se insertará el contenido específico de cada plantilla -->
         {% endblock %}
     </div>

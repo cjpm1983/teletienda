@@ -41,6 +41,7 @@ urlpatterns = [
 
     path('pushhome', pushhome),
     path('send_push', send_push),
+    path('webpush', include('webpush.urls')),
 
     #path('webpush/', include('webpush.urls')),
 

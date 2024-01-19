@@ -464,6 +464,7 @@ class ImageWidth:
 def pushhome(request):
    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+   #user = User.objects.filter(username="admin1").first()#
    user = request.user
    return render(request, 'notificationspush/pushhome.html', {user: user, 'vapid_key': vapid_key})
 
