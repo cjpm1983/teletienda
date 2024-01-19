@@ -28,7 +28,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 from django.views.decorators.http import require_GET, require_POST
-from webpush import send_user_notification
+#from webpush import send_user_notification
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import JsonResponse, HttpResponse
 from django.contrib.auth import logout

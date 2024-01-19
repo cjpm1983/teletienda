@@ -39,9 +39,9 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('checkmail/', views.checkmail, name='checkmail'),
 
-    path('pushhome', pushhome),
-    path('send_push', send_push),
-    path('webpush', include('webpush.urls')),
+    #path('pushhome', pushhome),
+    #path('send_push', send_push),
+    #path('webpush', include('webpush.urls')),
 
     #path('webpush/', include('webpush.urls')),
 

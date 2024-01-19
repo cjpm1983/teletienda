@@ -32,7 +32,7 @@ urlpatterns = [
     path('tienda/', include('tienda_app.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
 
-    path('webpush/', include('webpush.urls')),
+    #path('webpush/', include('webpush.urls')),
 ]
 
 if settings.DEBUG:
