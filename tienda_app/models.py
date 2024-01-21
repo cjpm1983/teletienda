@@ -9,6 +9,14 @@ from django.utils import timezone
 from django.utils.html import mark_safe
 
 # Create your models here.
+
+class Etiqueta(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(max_length=255)
+
+    def __str__(self):
+        return self.nombre
+
 class Tienda(models.Model):
     nombre = models.CharField(max_length=100)
     imagen = ResizedImageField(size=[1000, 700], upload_to='tiendas/',default='tiendas/default.png', blank=True, null=True)
@@ -52,6 +60,7 @@ class Tienda(models.Model):
     
 class Producto(models.Model):
     tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
+    etiquetas = models.ManyToManyField(Etiqueta)
     nombreProducto = models.CharField(max_length=100)
     foto = ResizedImageField(size=[1000, 700], upload_to='productos/',default='images/default.png', blank=True, null=True)
     cantidad = models.IntegerField(blank=True)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tienda, Producto, Rating, UserProfile, Comment, Preferencia
+from .models import Tienda, Producto, Rating, UserProfile, Comment, Preferencia, Etiqueta
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -10,9 +10,14 @@ from django.utils.html import format_html
 
 
 
+@admin.register(Etiqueta)
+class EtiquetaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'descripcion')
+    search_fields = ('nombre', 'descripcion')
+
 class ProductoAdmin(admin.ModelAdmin):
     fields = ['nombreProducto','image_tag','foto','precio','unidad','descripcion', 'tienda','cantidad'
-              ,'visible','created','updated',]
+              ,'visible','created','updated','etiquetas']
     list_display = ('image_tag','nombreProducto', 'tienda', 'visible')
     list_display_links = ('image_tag','nombreProducto',)
     
@@ -21,6 +26,8 @@ class ProductoAdmin(admin.ModelAdmin):
     list_editable = ('visible',)
     list_filter = ('tienda','visible')
     actions = ['update_visible']
+
+    autocomplete_fields = ('etiquetas',)
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
