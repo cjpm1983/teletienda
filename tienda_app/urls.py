@@ -39,6 +39,11 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('checkmail/', views.checkmail, name='checkmail'),
 
+    # path('password_reset/', views.forgot_password, name='forgot_password'),
+    # path('password_reset_sent/', views.password_reset_sent, name='password_reset_sent'),
+    # path('password_reset/<uidb64>/<token>/', views.password_reset, name='password_reset'),
+    # path('password_reset_complete/', views.password_reset_complete, name='password_reset_complete'),
+    
     #path('pushhome', pushhome),
     #path('send_push', send_push),
     #path('webpush', include('webpush.urls')),

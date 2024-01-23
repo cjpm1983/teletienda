@@ -76,7 +76,7 @@ class ProductoAdmin(admin.ModelAdmin):
     #update_visible.short_description = 'Actualizar visibilidad'
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('producto', 'usuario','text','parent_comment')
+    list_display = ('producto', 'usuario','text','parent_comment','super_comment')
     actions = ['update_aprobado']
     #search_fields = ('usuario')
 

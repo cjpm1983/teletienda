@@ -46,4 +46,29 @@ class MyAuthenticationForm(AuthenticationForm):
     }
     def __init__(self, *args, **kwargs):
         super(MyAuthenticationForm, self).__init__(*args, **kwargs)
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(label='Email')
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise forms.ValidationError('El usuario no existe')
+        return email
     
+class SetPasswordForm(forms.Form):
+    new_password1 = forms.CharField(label='Nueva contraseña', widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label='Confirmar contraseña', widget=forms.PasswordInput)
+
+    def clean_new_password2(self):
+        new_password1 = self.cleaned_data['new_password1']
+        new_password2 = self.cleaned_data['new_password2']
+        if new_password1 != new_password2:
+            raise forms.ValidationError('Las contraseñas no coinciden')
+        return new_password2
+
+    def save(self, user):
+        user.set_password(self.cleaned_data['new_password1'])
+        user.save()

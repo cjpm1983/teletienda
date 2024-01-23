@@ -1,12 +1,14 @@
+from django.urls import reverse
+from tienda_app.forms import CustomUserCreationForm, ForgotPasswordForm, ProfileForm, SetPasswordForm
 from .models import Tienda, Producto, Rating, UserProfile, Comment
-from .forms import TiendaForm, ProductoForm, CustomUserCreationForm, ProfileForm
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.utils.html import strip_tags
 
 
 from django.shortcuts import render, redirect
@@ -313,16 +315,23 @@ def comment(request,producto_id):
     
     #producto.filter(nombreProducto__icontains=termino_busqueda)
     #limitamos los propios para que no haya spamers llenando de comentarios cada lugar
-    if (propios < 15):
+    if (propios < 100):
         comment_data = request.POST['comentario']
-        comment = Comment(producto=producto, usuario=request.user, text=comment_data)
+        comment = Comment(producto=producto, usuario=request.user, text=comment_data, super_comment=-1)
         
         #si tiene parent_coment es una respuesta, sino se trata del comentario principal donde se califica, 
         #debe existir solo uno por usuario y producto
         main_c = None
         if request.POST.get('parent_comment') is not None:
             comment.parent_comment = Comment.objects.get(id=request.POST['parent_comment'])
+            #procedemos a definir el super_comment
             comment.save()
+            
+            comment.super_comment = comment.parent_comment.super_comment if comment.parent_comment.super_comment else superc(comment.parent_comment)
+            
+            comment.save()
+        #esta parte del else no se esta usando pues por aqui solo entran RESPUESTAS 
+        #a comentarios principales con rating, Y ESTOS ULTIMOS ENTRAN POR EL RATING
         else:
             #como comprobar los vacios
             main_c = Comment.objects.filter(parent_comment__isnull=True,usuario=request.user,producto=producto).first()
@@ -343,6 +352,14 @@ def comment(request,producto_id):
     else:
         return redirect("listar_producto")
 
+def superc(comment):
+    
+    if comment.parent_comment is None:
+        return comment.id
+    else:
+        superc(comment.parent_comment)
+    
+
 ######################## REGISTRO ###############################################################
 
 @login_required
@@ -358,6 +375,7 @@ def edit_profile(request):
 
 def register(request):
     if request.method == 'POST':
+        #este form no estaba importado y funcionaba, misteroosamente todo bien, ahora la importe, si dejara de funcionar, prueba a eliminar la importacion
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
@@ -371,6 +389,7 @@ def register(request):
             message = render_to_string('registration/activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
+                'protocol': 'http',
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user),
             })
@@ -423,6 +442,72 @@ def activate(request, uidb64, token):
         return render(request, 'registration/activation_success.html')
     else:
         return render(request, 'registration/activation_failed.html')
+    
+
+
+
+
+# def forgot_password(request):
+#     if request.method == 'POST':
+#         form = ForgotPasswordForm(request.POST)
+#         if form.is_valid():
+#             email = form.cleaned_data['email']
+#             user = User.objects.filter(email=email).first()
+#             if user:
+#                 current_site = get_current_site(request)
+#                 mail_subject = 'Recuperar contraseña'
+
+#                 message = render_to_string('registration/forgot_password_email.html', {
+#                     'user': user,
+#                     'domain': current_site.domain,
+#                     'protocol': 'http',
+#                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                     'token': default_token_generator.make_token(user),
+#                     'url': reverse('password_reset', kwargs={'uidb64': urlsafe_base64_encode(force_bytes(user.pk)), 'token': default_token_generator.make_token(user)}),
+#                 })
+                
+#                 plain_message = strip_tags(message)
+
+#                 email_from = 'noreply@teletienda.com'  # Reemplaza con tu dirección de correo electrónico
+#                 recipient_list = [user.email]
+#                 #email = EmailMessage(mail_subject, message, email_from, recipient_list)
+#                 email = EmailMultiAlternatives(
+#                     mail_subject,
+#                     plain_message,
+#                     email_from,
+#                     recipient_list,
+#                 )
+#                 email.attach_alternative(message, 'text/html')
+#                 email.send()
+#                 return redirect('password_reset_sent')
+        
+
+#     else:
+#         form = ForgotPasswordForm()
+#     return render(request, 'registration/forgot_password.html', {'form': form})
+
+# def password_reset_sent(request):
+#     return render(request, 'registration/password_reset_sent.html')
+
+# def password_reset(request, uidb64, token):
+#     try:
+#         uid = force_str(urlsafe_base64_decode(uidb64))
+#         user = User.objects.get(pk=uid)
+#     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+#         user = None
+#     if user is not None and default_token_generator.check_token(user, token):
+#         form = SetPasswordForm()
+#         if request.method == 'POST':
+#             form = SetPasswordForm(data=request.POST)
+#             if form.is_valid():
+#                 form.save(user)
+#                 return redirect('password_reset_complete')
+#         return render(request, 'registration/password_reset.html', {'form': form})
+#     else:
+#         return render(request, 'registration/password_reset_invalid.html')
+
+# def password_reset_complete(request):
+#     return render(request, 'registration/password_reset_complete.html')
 
 ######################### TARTAMIENTO DE IMAGENES #################################
 

@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <div style="display: flex; flex-direction: row;">
+        <a href="{% url 'admin:index' %}">
+            <img id="milogo" src="{% static 'tienda_app/img/logowhite.png' %}" />
+        </a>
+        <span>
+            <h1 id="doulos">INSTRAI</h1>
+            <span id="sub-site-name">Un sitio para todos</span>
+        </span>
+    <div>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

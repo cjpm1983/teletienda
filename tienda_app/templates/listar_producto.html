@@ -192,6 +192,32 @@
               <!--div class="selectores col-md-4"-->
 
               <div class="pill col-md-4">
+                <div class="form-group badge pill-left "><p class="form-control">Provincia</p></div>
+                <div class="form-group badge pill-right ">
+                  <select class="form-control" name="provincia" id="provincia" onchange="this.form.submit()">
+                      
+                      <option {% if not provincia %}selected=""{% endif %} value=""> Todas las Provincias </option>
+                      <option value="pinar_del_rio" {% if provincia == "pinar_del_rio" %}selected{% endif %}>Pinar del Río</option>
+                      <option value="artemisa" {% if provincia == "artemisa" %}selected{% endif %}>Artemisa</option>
+                      <option value="la_habana" {% if provincia == "la_habana" %}selected{% endif %}>La Habana</option>
+                      <option value="mayabeque" {% if provincia == "mayabeque" %}selected{% endif %}>Mayabeque</option>
+                      <option value="matanzas" {% if provincia == "matanzas" %}selected{% endif %}>Matanzas</option>
+                      <option value="cienfuegos" {% if provincia == "cienfuegos" %}selected{% endif %}>Cienfuegos</option>
+                      <option value="villa_clara" {% if provincia == "villa_clara" %}selected{% endif %}>Villa Clara</option>
+                      <option value="sancti_spiritus" {% if provincia == "sancti_spiritus" %}selected{% endif %}>Sancti Spíritus</option>
+                      <option value="ciego_de_avila" {% if provincia == "ciego_de_avila" %}selected{% endif %}>Ciego de Ávila</option>
+                      <option value="camaguey" {% if provincia == "camaguey" %}selected{% endif %}>Camagüey</option>
+                      <option value="las_tunas" {% if provincia == "las_tunas" %}selected{% endif %}>Las Tunas</option>
+                      <option value="granma" {% if provincia == "granma" %}selected{% endif %}>Granma</option>
+                      <option value="holguin" {% if provincia == "holguin" %}selected{% endif %}>Holguín</option>
+                      <option value="santiago_de_cuba" {% if provincia == "santiago_de_cuba" %}selected{% endif %}>Santiago de Cuba</option>
+                      <option value="guantanamo" {% if provincia == "guantanamo" %}selected{% endif %}>Guantánamo</option>
+                  </select>
+                </div>
+            </div>
+
+
+              <div class="pill col-md-4">
                 <div class="form-group badge pill-left "><p class="form-control">Tienda</p></div>
                 <div class="form-group badge pill-right ">
                       <select class="form-control"  name="tienda" id="tiendasSelect" onchange="this.form.submit()">
@@ -216,32 +242,6 @@
                           <option value="50" {% if mostrar == 50 %}selected{% endif %}>50</option>
                           <option value="100" {% if mostrar == 100 %}selected{% endif %}>100</option>
                       </select>
-                  </div>
-              </div>
-
-
-              <div class="pill col-md-4">
-                  <div class="form-group badge pill-left "><p class="form-control">Provincia</p></div>
-                  <div class="form-group badge pill-right ">
-                    <select class="form-control" name="provincia" id="provincia" onchange="this.form.submit()">
-                        
-                        <option {% if not provincia %}selected=""{% endif %} value=""> Todas las Provincias </option>
-                        <option value="pinar_del_rio" {% if provincia == "pinar_del_rio" %}selected{% endif %}>Pinar del Río</option>
-                        <option value="artemisa" {% if provincia == "artemisa" %}selected{% endif %}>Artemisa</option>
-                        <option value="la_habana" {% if provincia == "la_habana" %}selected{% endif %}>La Habana</option>
-                        <option value="mayabeque" {% if provincia == "mayabeque" %}selected{% endif %}>Mayabeque</option>
-                        <option value="matanzas" {% if provincia == "matanzas" %}selected{% endif %}>Matanzas</option>
-                        <option value="cienfuegos" {% if provincia == "cienfuegos" %}selected{% endif %}>Cienfuegos</option>
-                        <option value="villa_clara" {% if provincia == "villa_clara" %}selected{% endif %}>Villa Clara</option>
-                        <option value="sancti_spiritus" {% if provincia == "sancti_spiritus" %}selected{% endif %}>Sancti Spíritus</option>
-                        <option value="ciego_de_avila" {% if provincia == "ciego_de_avila" %}selected{% endif %}>Ciego de Ávila</option>
-                        <option value="camaguey" {% if provincia == "camaguey" %}selected{% endif %}>Camagüey</option>
-                        <option value="las_tunas" {% if provincia == "las_tunas" %}selected{% endif %}>Las Tunas</option>
-                        <option value="granma" {% if provincia == "granma" %}selected{% endif %}>Granma</option>
-                        <option value="holguin" {% if provincia == "holguin" %}selected{% endif %}>Holguín</option>
-                        <option value="santiago_de_cuba" {% if provincia == "santiago_de_cuba" %}selected{% endif %}>Santiago de Cuba</option>
-                        <option value="guantanamo" {% if provincia == "guantanamo" %}selected{% endif %}>Guantánamo</option>
-                    </select>
                   </div>
               </div>
 

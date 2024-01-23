@@ -129,11 +129,16 @@ class Comment(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     approved_comment = models.BooleanField(default=False)
     parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
-    #replies = models.ManyToManyField('self', related_name='parent_comment', blank=True)
-     
 
-    # def __str__(self):
-    #     return f'{self.usuario}-->{self.text} '
+    super_comment = models.IntegerField(blank=True, null=True)
+    
+    #super_comment = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='super_comments')
+
+    # def save(self, *args, **kwargs):
+    #      if not self.super_comment:
+    #          self.super_comment = self
+    #      super().save(*args, **kwargs)
+        
     def related_rating(self):
         return Rating.objects.filter(producto=self.producto,usuario=self.usuario).first()
 
