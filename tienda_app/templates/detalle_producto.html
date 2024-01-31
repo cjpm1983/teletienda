@@ -4,13 +4,13 @@
 
 <style type="text/css">
 .subcard{
-  padding:5px;
-  margin-bottom:5px;
-  padding-left:25px;
+  padding: 15px;
+  margin: 5px 15px 5px 35px;
 }
 .supercard{
-  padding:5px;
+  padding:15px;
   margin-bottom:5px;
+  margin:15px;
 }
 .btncalificar{
   --mdb-btn-bg: #bde6ae;
@@ -26,18 +26,18 @@
   --mdb-btn-box-shadow-state: 0 8px 9px -4px rgba(20,164,77,0.3),0 4px 18px 0 rgba(20,164,77,0.2);
 }
 .cpropio{
-  color: #251e1e;
-  background: #e9eec3;
+  /*color: #251e1e;
+  background: #e9eec3;*/
   border-radius: 0px 0px 10px 10px;
 }
 .cotro{
-  color: #251e1e;
-  background: #ceeaee;
+  /*color: #251e1e;
+  background: #ceeaee;*/
   border-radius: 0px 0px 10px 10px;
 }
 .crespondiendo{
-  background: #d7e1eb !important;
-  color: #415956 !important;
+  /*background: #d7e1eb !important;
+  color: #415956 !important;*/
   border-radius: 10px 10px 0px 0px;
   padding-right: 5px;
 }
@@ -153,12 +153,16 @@
                   <div class="card card-body supercard"><!--Carta-->
 
                     <div class="crespondiendo d-flex flex-row justify-content-between">
-                      <div class="bg-info rounded-circle p-2 m-2" style="">
+                      
+                      {%if comment.usuario.userprofile.avatar%}
+                      <img style="width: 48px;height: 48px;" src="{{ comment.usuario.userprofile.avatar.url }}" alt="avatar" class="img-fluid m-2 rounded-circle">
+                      {%else%}
+                      <div class="bg-info d-flex justify-content-center align-items-center rounded-circle p-2 m-2 " style="color:white;width:48px;height:48px;">
                         {{ comment.usuario.username|first|upper }}
                       </div>
+                      {%endif%}
 
-                      <img class="rounded-circle shadow-4-strong" alt="avatar2" src="/media/avatar/IMG_20230320_202352.jpeg" />
-
+ 
                       <div style="display: inline-block;" class="rateyo" id="showrating_{{comment.id}}_{{user_id}}" data-rating="{{comment.related_rating.stars|default_if_none:"0" }}">
 
                       </div>    
@@ -183,14 +187,15 @@
                       <!--Fin de la seccion superior: Respondiendo o estrellas-->
                     </div>
                   
-                    <div class="mb-0 d-flex justify-content-between content {% if comment.usuario == user %} cpropio {% else %} cotro {% endif %} ">
+                    <hr class="mb-2 mt-0" >
+                    <div class="mb-0 d-flex justify-content-start content {% if comment.usuario == user %} cpropio {% else %} cotro {% endif %} ">
                       <strong class="">{{ comment.usuario }}:</strong> 
                       <p >{{ comment.text }}</p> 
-                      <span>  
-                        <span class="btn btn-primary" id="responder_{{comment.id}}"><i class="fa fa-reply"></i>&nbsp;Responder</span>
-                        <span class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapseComments_{{comment.id}}" aria-expanded="false" aria-controls="collapseComments_{{comment.id}}"><i class="fa fa-comment"></i></span>
-                      <span>
                     </div>
+                    <span class="d-flex justify-content-end">  
+                      <span class="btn " id="responder_{{comment.id}}"><i class="fa fa-reply"></i>&nbsp;</span>
+                      <span class="btn " type="button" data-toggle="collapse" data-target="#collapseComments_{{comment.id}}" aria-expanded="false" aria-controls="collapseComments_{{comment.id}}"><i class="fa fa-comment"></i></span>
+                    <span>
 
                   </div><!--card-->   
 
@@ -213,7 +218,10 @@
                       $("#replicando").remove();
                       //luego agregarlo
                         $("#comment_form").prepend(vhtml);
-                        $("#comment_form").show()
+                        $("#comment_form").show();
+                        $('html, body').animate({
+                          scrollTop: $("#comment_form").offset().top
+                      }, 1000);
 
                         //$("#responder_{{comment.id}}").hide();
                     });
@@ -225,29 +233,31 @@
                       {% if subcomment.super_comment == comment.id%}
 
                             <div class="card card-body subcard pl-5"><!--subcarta-->
-                              <div class="crespondiendo d-flex flex-row justify-content-between">
-                                  <div class="bg-info rounded-circle p-2 m-2" style="">
+                              <div class="crespondiendo d-flex flex-row justify-content-between align-items-center">
+                                                                                                  
+                                  {%if subcomment.usuario.userprofile.avatar%}
+                                  <img style="width: 48px;height: 48px;" src="{{ comment.usuario.userprofile.avatar.url }}" alt="avatar" class="img-fluid m-2 rounded-circle">
+                                  {%else%}
+                                  <div class="bg-info d-flex justify-content-center align-items-center rounded-circle p-2 m-2 " style="color:white;width:48px;height:48px;">
                                     {{ subcomment.usuario.username|first|upper }}
                                   </div>
-                                  <b class="crespondiendo text-light"><p>En respuesta a <b>{{ subcomment.parent_comment.usuario }}:</b> {{ subcomment.parent_comment.text }}</p></b>
+                                  {%endif%}
+                                  <b class="crespondiendo"><p>En respuesta a <b>{{ subcomment.parent_comment.usuario }}:</b> {{ subcomment.parent_comment.text }}</p></b>
                           
                                 <!--Fin de la seccion superior: Respondiendo o estrellas-->
                               </div>
-                            
-                              <div class="mb-0 d-flex justify-content-between content {% if subcomment.usuario == user %} cpropio {% else %} cotro {% endif %} ">
+                              <hr class="mb-2 mt-0" >
+                              <div class="mb-0 d-flex justify-content-start content {% if subcomment.usuario == user %} cpropio {% else %} cotro {% endif %} ">
                                 <strong class="">{{ subcomment.usuario }}:</strong> 
                                 <p >{{ subcomment.text }}</p> 
-                                <span>  
-                                  <span class="btn btn-primary" id="responder_{{subcomment.id}}"><i class="fa fa-reply"></i>&nbsp;Responder</span>
-                                  <span class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapseComments_{{subcomment.id}}" aria-expanded="false" aria-controls="collapseComments_{{subcomment.id}}"><i class="fa fa-comment"></i></span>
-                                <span>
                               </div>
-                          
+                              <span class="d-flex justify-content-end">
+                                <span class="btn " id="responder_{{subcomment.id}}"><i class="fa fa-reply"></i>&nbsp;</span>
+                              </span>
                             
-                              <hr clas='border-0'/>
                               
                               <script>
-                          
+    
                                 $("#responder_{{subcomment.id}}").click(function() {
                                   
                                   thtml = "Hello"  
@@ -258,15 +268,19 @@
                                     <div  style='max-width:80%;'>    \                                                \
                                         <span><b>Respondiendo a:&nbsp;</b> {{subcomment.usuario}}->{{subcomment.text}}</span>                \
                                     </div>                                                                              \
-                                    <div  style='max-width:5%;'>x</div>                                                  \
-                                  </div>    \                                                                              \
-                                  ";                                                                          
-                                      
+                                    <div class='btn' style='max-width:5%;' id='cerrar_rcoment'>x</div>                                                  \
+                                  </div>    \                                                                            \
+                                  ";    
+                                  
+                                                                     
                                   //primero eliminar si existe el div
                                   $("#replicando").remove();
                                   //luego agregarlo
                                     $("#comment_form").prepend(vhtml);
                                     $("#comment_form").show()
+                                    $('html, body').animate({
+                                      scrollTop: $("#comment_form").offset().top
+                                  }, 1000);
                           
                                     //$("#responder_{{subcomment.id}}").hide();
                                  });
@@ -445,18 +459,23 @@
         {% if not user.is_authenticated %}
         <script>
           $(function() {
-              var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
 
-              $("#rating_{{ producto.id }}").rateYo({
-                  rating: rat2,                  
-                  readOnly: false,
-                  starWidth: "30px",
-                  fullStar: true,
-                  onSet: function(rating, rateYoInstance) {
-                    alert("Debe estar logueado para calificar.")
-                  }
-              });
+
+          
+            var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
+
+            $("#rating_{{ producto.id }}").rateYo({
+                rating: rat2,                  
+                readOnly: false,
+                starWidth: "30px",
+                fullStar: true,
+                onSet: function(rating, rateYoInstance) {
+                  alert("Debe estar logueado para calificar.")
+                }
+            });
           });
+
+
         </script>
         {% endif %}
         <!--fin rating-->

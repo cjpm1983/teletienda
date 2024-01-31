@@ -118,7 +118,7 @@
           <div class="dropdown col-sm-1" style="">
             <button class="btn rounded-circle" style="padding:0px; width:48px;"  type="button" id="userDropdown" data-mdb-toggle="dropdown" aria-expanded="false">
               {%if request.user.userprofile.avatar%}
-                <img src="{{ request.user.userprofile.avatar.url }}" alt="avatar" class="img-fluid rounded-circle">
+                <img style="width: 48px;height: 48px;" src="{{ request.user.userprofile.avatar.url }}" alt="avatar" class="img-fluid rounded-circle">
               {%else%}
                 {{ user.username|first|upper }}
               {%endif%}
@@ -302,7 +302,7 @@
         <div class="dropdown col-sm-1" style="">
           <button class="btn rounded-circle" style="padding:0px; width:48px;"  type="button" id="userDropdown" data-mdb-toggle="dropdown" aria-expanded="false">
             {%if request.user.userprofile.avatar%}
-              <img src="{{ request.user.userprofile.avatar.url }}" alt="avatar" class="img-fluid rounded-circle">
+              <img style="width: 48px;height: 48px;" src="{{ request.user.userprofile.avatar.url }}" alt="avatar" class="img-fluid rounded-circle">
             {%else%}
               {{ user.username|first|upper }}
             {%endif%}
