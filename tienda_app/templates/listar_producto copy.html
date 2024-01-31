@@ -1,186 +1,463 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+
 <style>
-.price {
-  color: #263238;
-  font-size: 24px;
-}
+  .price {
+    color: #263238;
+    font-size: 24px;
+  }
 
-.card-title {
-color:#263238
-}
+  .card-title {
+    color: #263238
+  }
 
-.sale {
-  color: #E53935
-}
+  .sale {
+    color: #E53935
+  }
 
-.sale-badge {
-  background-color: #E53935
-}
-</style>
+  .sale-badge {
+    background-color: #E53935
+  }
+
+
+  .pill {
+    display:flex;
+    justify-content:center;
+    max-height:48px;
+    margin-bottom: 10px;
+  }
   
-
-
-<h1>Listar Productos</h1>
-  <table>
-    <tr>
-      <th>Tienda</th>
-      <th>Nombre</th>
-      <th>Foto</th>
-      <th>Cantidad</th>
-      <th>Precio</th>
-      <th>Unidad</th>
-      <th>Descripción</th>
-      <th>Acciones</th>
-    </tr>
-    {% for producto in productos %}
-      <tr>
-        <td>{{ producto.tienda }}</td>
-        <td><a href="{% url 'detalle_producto' producto.id %}">{{ producto.nombreProducto }}</a></td>
-        <td><img src="{{ producto.foto.url }}" alt="{{ producto.nombreProducto }}" height="100"></td>
-        <td>{{ producto.cantidad }}</td>
-        <td>{{ producto.precio }}</td>
-        <td>{{ producto.unidad }}</td>
-        <td>{{ producto.descripcion }}</td>
-        <td>
-          <a href="{% url 'editar_producto' producto.id %}">Editar</a>
-          <a href="{% url 'eliminar_producto' producto.id %}">Eliminar</a>
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
-
-
-
-
-
-
-
-
-
-
-
-
- <!--Main layout-->
- <main>
-  <div class="container">
-    <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark mt-3 mb-5 shadow p-2" style="background-color: #607D8B">
-    <!-- Container wrapper -->
-    <div class="container-fluid">
-  
-      <!-- Navbar brand -->
-      <a class="navbar-brand" href="#">Categories:</a>
-  
-      <!-- Toggle button -->
-      <button 
-         class="navbar-toggler" 
-         type="button" 
-         data-mdb-toggle="collapse" 
-         data-mdb-target="#navbarSupportedContent2" 
-         aria-controls="navbarSupportedContent2" 
-         aria-expanded="false" 
-         aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-      </button>
-  
-      <!-- Collapsible wrapper -->
-      <div class="collapse navbar-collapse" id="navbarSupportedContent2">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-  
-          <!-- Link -->
-          <li class="nav-item acitve">
-            <a class="nav-link text-white" href="#">All</a>
-          </li>
-          <li class="nav-item">
-                <a class="nav-link text-white" href="#">Shirts</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-white" href="#">Sport wears</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-white" href="#">Outwears</a>
-              </li>
-  
-        </ul>
-  
-        <!-- Search -->
-        <form class="w-auto py-1" style="max-width: 12rem">
-          <input type="search" class="form-control rounded-0" placeholder="Search" aria-label="Search">
-        </form>
-  
-      </div>
-    </div>
-    <!-- Container wrapper -->
-  </nav>
-  <!-- Navbar -->
+  .pill-left {
+    background-color: #e4e4e4;
+    border-radius: 30px 0px 0px 30px;
     
-  <!-- Products -->
-    <section>
-    <div class="text-center">
-      <div class="row">
-        
-        {% for producto in productos %}
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="card">
-            <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-              data-mdb-ripple-color="light">
-              <img src="{{ producto.foto.url }}"
-                class="img-thumbnail" style="max-height: 150px;" />
-              <a href="{% url 'detalle_producto' producto.id %}">
-                <div class="mask">
-                  <div class="d-flex justify-content-start align-items-end h-100">
-                    <h5><span class="badge bg-dark ms-2">NEW</span></h5>
-                  </div>
-                </div>
-                <div class="hover-overlay">
-                  <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                </div>
-              </a>
+    /*color: #e4e4e4;*/
+  }
+
+  .pill-right {
+    background-color: white;
+    border-radius: 0px 30px 30px 0px;
+    /*color: #white;*/
+  }
+
+  
+  .pills-left {
+    background-color: white;
+    border-radius: 30px 0px 0px 30px;
+    /*color: white;*/
+    border: 0px !important;
+  }
+  
+  .pills-right {
+    background-color: #e4e4e4;
+    border-radius: 0px 30px 30px 0px;
+    /*color: #e4e4e4;*/
+  }
+
+  .fa-search{
+    color: black;
+    font-size: initial;
+  }
+
+  
+  .pill-right select, .pill-left p{
+    border: 0px solid transparent;
+    margin:0;
+    background:transparent;
+  }
+
+  .pill-right select:focus,.pill-right select:focus-visible{
+    border-color: white;
+    box-shadow: none;
+  }
+  .selectores{
+    display: flex;
+    justify-content: end;
+  }
+  .orden{
+    color:white;
+    list-style-type: none;
+  }
+  #cabecerageneral{
+    display:flex;
+    flex-direction:column;
+  }
+  .cabecerasuperior{
+    background-color:#00a999;
+  }
+  .cabecerainferior{
+    margin-top:0px !important;
+  }
+  .pills-right:hover{
+    background-color:#d7d7d7;
+  }
+  #enviarbuscar, #searchv{
+    width:unset;
+  }
+</style>
+
+
+
+<!--Main layout-->
+<main>
+
+  <div class="container">
+    
+    <div id="cabecerageneral"><!--cabecera Genera-->
+      <div class="container-fluid cabecerasuperior" >
+        <div class="d-flex justify-content-between p-2 ">
+          
+        <div class="col-md-5 d-flex justify-content-between style='align-items: flex-end;'">  
+            <img id="milogo" src="{% static 'tienda_app/img/logowhite.png' %}" width='48px' />
+            <!--form-inline col-md-3 pill-->
+            <div id="navform3" class="form-inline row  pill" >
+              <input  id="searchv" class="col-md-8 pills-left" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." >
+              
+              <button type="button" id="enviarbuscar" class="btn col-md-4 pills-right" >
+                <i class="fa fa-search"></i>
+              </button>
             </div>
-            <div class="card-body">
-              <a href="" class="text-reset">
-                <h5 class="card-title mb-2">{{ producto.nombreProducto }} </h5>
-                <h6>{{ producto.unidad }}</h6>
-              </a>
-              <a href="" class="text-reset ">
-                <p>{{ producto.tienda }} - {{ producto.descripcion |truncatewords:50 }}</p>
-              </a>
-              <h6 class="mb-3 price">{{ producto.precio }}$</h6>
+        </div>
+        {{agente}}
+          {%if mob%}
+             es celular
+          {%else%}
+             no es celular
+          {%endif%}
+          <!--h1 class="col-md-3" style="color:white;display:flex; justify-content:center;">Instrai</h1-->
+
+          <!-- Dropdown Registro-->
+          {% if user.is_authenticated %}
+          <div class="dropdown col-sm-1" style="">
+            <button class="btn rounded-circle" style="padding:0px; width:48px; type="button" id="userDropdown" data-mdb-toggle="dropdown"
+              aria-expanded="false">
+              {%if request.user.userprofile.avatar%}
+                <img src="{{ request.user.userprofile.avatar.url }}" alt="avatar" class="img-fluid rounded-circle">
+              {%else%}
+                {{ user.username|first|upper }}
+              {%endif%}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
+              <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
+            </ul>
+          </div>
+          {% else %}
+          <div class="dropdown col-sm-1" style="">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
+              aria-expanded="false">
+              Registro
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="registerDropdown">
+              <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
+              <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
+            </ul>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-dark mt-3 mb-5 shadow p-2 cabecerainferior" style="background-color:#4d4d4d;">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+          <!-- Navbar brand -->
+      
+          <!-- Toggle button -->
+          <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+            data-mdb-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+
+
+          <!-- Collapsible wrapper -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+            
+                          <!-- Dropdown -->
+
+                        
+            <form id="navform" class="form-inline row " method="get" action="">
+                
+              <input name="search" type="hidden" id="search" {% if search %} value="{{search}}" {% endif %} >
+                      
+            
+
+              <!--div class="selectores col-md-4"-->
+
+              <div class="pill col-md-4">
+                <div class="form-group badge pill-left "><p class="form-control">Provincia</p></div>
+                <div class="form-group badge pill-right ">
+                  <select class="form-control" name="provincia" id="provincia" onchange="this.form.submit()">
+                      
+                      <option {% if not provincia %}selected=""{% endif %} value=""> Todas las Provincias </option>
+                      <option value="pinar_del_rio" {% if provincia == "pinar_del_rio" %}selected{% endif %}>Pinar del Río</option>
+                      <option value="artemisa" {% if provincia == "artemisa" %}selected{% endif %}>Artemisa</option>
+                      <option value="la_habana" {% if provincia == "la_habana" %}selected{% endif %}>La Habana</option>
+                      <option value="mayabeque" {% if provincia == "mayabeque" %}selected{% endif %}>Mayabeque</option>
+                      <option value="matanzas" {% if provincia == "matanzas" %}selected{% endif %}>Matanzas</option>
+                      <option value="cienfuegos" {% if provincia == "cienfuegos" %}selected{% endif %}>Cienfuegos</option>
+                      <option value="villa_clara" {% if provincia == "villa_clara" %}selected{% endif %}>Villa Clara</option>
+                      <option value="sancti_spiritus" {% if provincia == "sancti_spiritus" %}selected{% endif %}>Sancti Spíritus</option>
+                      <option value="ciego_de_avila" {% if provincia == "ciego_de_avila" %}selected{% endif %}>Ciego de Ávila</option>
+                      <option value="camaguey" {% if provincia == "camaguey" %}selected{% endif %}>Camagüey</option>
+                      <option value="las_tunas" {% if provincia == "las_tunas" %}selected{% endif %}>Las Tunas</option>
+                      <option value="granma" {% if provincia == "granma" %}selected{% endif %}>Granma</option>
+                      <option value="holguin" {% if provincia == "holguin" %}selected{% endif %}>Holguín</option>
+                      <option value="santiago_de_cuba" {% if provincia == "santiago_de_cuba" %}selected{% endif %}>Santiago de Cuba</option>
+                      <option value="guantanamo" {% if provincia == "guantanamo" %}selected{% endif %}>Guantánamo</option>
+                  </select>
+                </div>
+            </div>
+
+
+              <div class="pill col-md-4">
+                <div class="form-group badge pill-left "><p class="form-control">Tienda</p></div>
+                <div class="form-group badge pill-right ">
+                      <select class="form-control"  name="tienda" id="tiendasSelect" onchange="this.form.submit()">
+                        <option {% if not shop %}selected=""{% endif %} value=""> Todas las tiendas </option>
+                          {% for tienda in tiendas %}
+                              <option {% if shop.nombre == tienda.nombre %}selected=""{% endif %} value="{{ tienda.nombre }}">
+                                
+                                {{tienda.nombre}}
+                                
+                              </option>
+                          {% endfor %}
+                      </select>
+                  </div>
+              </div>
+
+
+              <div class="pill col-md-3">
+                <div class="form-group badge pill-left "><p class="form-control">Mostrar</p></div>
+                <div class="form-group badge pill-right ">
+                      <select class="form-control" name="mostrar" id="mostrar" onchange="this.form.submit()">
+                          <option value="5" {% if mostrar == 5 %}selected{% endif %}>5</option>
+                          <option value="50" {% if mostrar == 50 %}selected{% endif %}>50</option>
+                          <option value="100" {% if mostrar == 100 %}selected{% endif %}>100</option>
+                      </select>
+                  </div>
+              </div>
+
+              <ul class="orden col-md-3" >
+                      
+                <li class="nav-item">
+                  <div class="form-check form-switch">
+                  
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Precio</label>
+                    <input {% if cprecio and cprecio == "on" %}checked{% endif %} name="cprecio" class="form-check-input" type="checkbox" role="switch" id="cprecio" onchange="this.form.submit()">  
+                  </div>
+                </li>
+
+                <li class="nav-item">
+                  <div class="form-check form-switch">
+                  
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Calificaci&oacute;n</label>
+                    <input {% if ccalif and ccalif == "on" %}checked{% endif %}  name="ccalif" class="form-check-input" type="checkbox" role="switch" id="ccalif">
+                  </div>
+                </li>
+                
+              </ul>              
+
+
+            </form>
+
+          </div><!--del Collapsible-->
+
+
+
+        </div><!--del container-fluid-->
+
+
+
+        
+      </nav>
+    </div><!--fin de cabecera general-->
+
+
+    <!-- Products -->
+    <section>
+      <div class="text-center">
+        <div class="row">
+
+          {% for producto in page_obj %}
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card">
+              <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
+                <img src="{{ producto.foto.url }}" class="img-thumbnail" style="max-height: 150px;" />
+                <a href="{% url 'detalle_producto' producto.id %}">
+
+                  <div class="hover-overlay">
+                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                  </div>
+                </a>
+              </div>
+              <div class="card-body">
+                
+                <div style="display: flex;justify-content:center">
+                  
+                <span>
+                <div style="display: inline-block;" class="rateyo" id="rating_{{ producto.id }}" data-rating="{{ producto.rating_avg|default_if_none:"0" }}"></div>
+                <p>{{producto.rating_cnt}} calificaciones</p>
+                </span>
+              
+              
+                <input type=hidden id="rating_avgh_{{producto.id}}" value="{{ producto.rating_avg|floatformat:2}}">
+                
+               
+                <span>
+                  <div class="d-flex justify-content-start align-items-end h-100">
+
+                    <h5>
+                      <a href="#">
+
+                      {% if producto.rating_avg == 0 %}
+                        <span class="badge bg-dark ms-1" style="height:2em;">
+                      {% elif producto.rating_avg > 0 and producto.rating_avg < 3 %}
+                        <span class="badge bg-warning ms-1" style="height:2em;">
+                      {% elif producto.rating_avg >= 3 and producto.rating_avg < 5 %}
+                        <span class="badge bg-primary ms-1" style="height:2em;">
+                      {% else %}
+                        <span class="badge bg-success ms-1" style="height:2em;">
+                      {% endif %}
+
+                        <p><i class="fa fa-star" aria-hidden="true"> </i>&nbsp;{{ producto.rating_avg | floatformat:1 }}</p>
+                      </span>
+                    </a>
+                    <a href="{% url 'detalle_producto' producto.id %}">
+                      <p><i class="fa fa-comments" aria-hidden="true"> </i>&nbsp;{{producto.get_comentarios.count}}</p>
+                    </a>
+                    </h5>
+                  </div>
+                </span>
+                
+              </div>
+
+
+                <script>
+                    $(function() {
+                        //var ratingAverage = parseFloat($("#rating_{{ producto.id }}").data("rating")).toFixed(2);
+                        //var ratingAverage = parseFloat($("#rating_avgh_{{producto.id}}").val())
+                        //var ratingAverage = parseFloat($("#rating_avgh_{{producto.id}}").val())
+                        var ratingAverage = parseFloat($("#rating_avgh_{{producto.id}}").val().replace(",",".")).toFixed(1)
+                        $("#rating_{{ producto.id }}").rateYo({
+                            rating: ratingAverage,
+                            readOnly: true,
+                            starWidth: "30px",
+                            multiColor: {
+ 
+                              "startColor": "#FF0000", //RED
+                              "endColor"  : "#00FF00"  //GREEN
+                            }
+                          });
+                          
+                          //precision: 2,
+                          //fullStar: false,
+                          //halfStar: true
+                        //$("#rating_value_{{ producto.id }}").text("Rating: " + ratingAverage.toFixed(2) + "/5");
+                    });
+                </script>
+
+                <hr class="mt-0"/>
+
+
+                <!--########## LIKES #################--
+
+                <div id="like_{{ producto.id }}"class='d-flex justify-content-end col-4 p-0'>
+                  <a
+                    type="button"
+                    data-producto="like_{{producto.id}}"
+                    class="fs-5 text-reset like-button"
+                    >
+                    {% if user in producto.likes.all %}
+                    <i class="fas fa-heart text-danger"></i>
+                    {% else%}
+                    <i class="far fa-heart"></i>
+                    {% endif %}
+                  </a>
+                  <p class="fw-bold fs-5 px-1">{{producto.likes.all | length}}</p>
+                  <p class="fw-bold fs-5 col-auto">Me gusta</p>
+                </div>
+                
+                <hr /-->
+
+                  <!--########## DESCRIPCION #################-->
+
+                <a class="text-reset" href="{% url 'detalle_producto' producto.id %}">
+                  <h5 class="card-title mb-2">{{ producto.nombreProducto }} </h5>
+                  <h6>Unidad: {{ producto.unidad }}</h6>
+                </a>
+                <a class="text-reset " href="{% url 'detalle_producto' producto.id %}">
+                  <p>{{ producto.tienda }} - {{ producto.descripcion |truncatewords:7 }}</p>
+                </a>
+                <h6 class="mb-3 price">{{ producto.precio }}$</h6>
+              </div>
             </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-  </section>
+    </section>
+
     
-  <!-- Pagination -->
-    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
-    <ul class="pagination">
-      <li class="page-item disabled">
-        <a class="page-link" href="#" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      <li class="page-item active"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item"><a class="page-link" href="#">4</a></li>
-      <li class="page-item"><a class="page-link" href="#">5</a></li>
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-    </ul>
-  </nav>  
-  <!-- Pagination -->  
+<!-- Pagination -->
+<nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?search={{ search }}&mostrar={{ mostrar }}&cprecio={{ cprecio }}&ccalif={{ ccalif }}&page={{ page_obj.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+    {% if num == page_obj.number %}
+    <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="?search={{ search }}&mostrar={{ mostrar }}&cprecio={{ cprecio }}&ccalif={{ ccalif }}&page={{ num }}">{{ num }}</a></li>
+    {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?search={{ search }}&mostrar={{ mostrar }}&cprecio={{ cprecio }}&ccalif={{ ccalif }}&page={{ page_obj.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+<!-- Pagination -->
+<!-- Container wrapper -->
   </div>
-  </main>
-   <!--Main layout-->
+</main>
+<!--Main layout-->
 
+<script type="text/javascript">
+  $(document).ready(function () {
+      $('#cprecio').click(function() {
+      //$('#console-event').html('Toggle: ' + $(this).prop('checked'))
+      //alert("fufu")
+      $(".form-inline").submit();
+    })
+    $('#ccalif').click(function() {
+      $("#navform").submit();
+      //alert("fufu")
+    }) 
 
+    $("#enviarbuscar").click(function(e) {
+      $("#search").val($("#searchv").val()) 
+      $("#navform").submit();
+    })
+
+/*
+    $(".dropdown-item").click(function(e){ 
+      e.preventDefault();
+      $(this).closest("form").submit();
+  });
+*/
+  });
+  </script>
 
 
 

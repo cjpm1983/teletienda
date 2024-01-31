@@ -3,6 +3,15 @@
 {% block content %}
 
 <style type="text/css">
+.subcard{
+  padding:5px;
+  margin-bottom:5px;
+  padding-left:25px;
+}
+.supercard{
+  padding:5px;
+  margin-bottom:5px;
+}
 .btncalificar{
   --mdb-btn-bg: #bde6ae;
   --mdb-btn-color: #29272d;
@@ -19,14 +28,18 @@
 .cpropio{
   color: #251e1e;
   background: #e9eec3;
+  border-radius: 0px 0px 10px 10px;
 }
 .cotro{
   color: #251e1e;
   background: #ceeaee;
+  border-radius: 0px 0px 10px 10px;
 }
 .crespondiendo{
-  background: #506780 !important;
-  color: #a2f3eb !important;
+  background: #d7e1eb !important;
+  color: #415956 !important;
+  border-radius: 10px 10px 0px 0px;
+  padding-right: 5px;
 }
 
 .rating {
@@ -91,12 +104,13 @@
       </div>
           
     </div>
-  </div>
-          <hr class="mt-0"/>
+  </div><!--fin del row-->
+  
+  
+  <hr class="mt-0"/>
 
 
-
-      <div id="Comentario" class="mt-10" >
+  <div id="Comentario" class="mt-10" >
         
 
         <form class="row" method="POST" id="comment_form" action="{% url "submit_comment" producto.id %}" style="display:none" >
@@ -114,92 +128,193 @@
           </div>
         </form>
 
-
-        <p>
-          <button class="btn btn-success mt-3" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-            Mostrar Comentarios
-          </button>
-        </p>
-        <div class="collapse" id="collapseExample">
-          <div class="card card-body">
-            
-                  
-              <div id="comantarioslst" class="mb-1 border-0">
-                {% for comment in producto.get_comentarios %}
-                <div class="card crespondiendo">
-                  {% if comment.parent_comment %}
-                    <b class="crespondiendo text-light"><p>En respuesta a <b>{{ comment.parent_comment.usuario }}:</b> {{ comment.parent_comment.text }}</p></b>
-                  {% else  %}
-                        <div style="display: inline-block;" class="rateyo" id="showrating_{{comment.id}}_{{user_id}}" data-rating="{{comment.related_rating.stars|default_if_none:"0" }}"></div>    
-                        
-              
-                                <script>
-                                  $(function() {
-                                      var srating_{{comment.id}}_{{user_id}} = parseFloat($("#showrating_{{comment.id}}_{{user_id}}").data("rating"));
-              
-                                      $("#showrating_{{comment.id}}_{{user_id}}").rateYo({
-                                          rating: srating_{{comment.id}}_{{user_id}},               
-                                          readOnly: true,
-                                          starWidth: "15px"
-                                      });
-                        
-                                  });
-                              </script>
-              
-                          
-                        </div>
-                  {% endif %}
-                  <div class="mb-0 d-flex justify-content-between content {% if comment.usuario == user %} cpropio {% else %} cotro {% endif %} ">
-                    <strong class="">{{ comment.usuario }}:</strong> 
-                    <p >{{ comment.text }}</p> 
-                    <span class="btn btn-primary" id="responder_{{comment.id}}"><i class="fa fa-reply"></i>&nbsp;Responder</span>
-                  </div>
-                </div>
-                <hr clas='border-0'/>
-                
-                <script>
-
-                  $("#responder_{{comment.id}}").click(function() {
-                    
-                    thtml = "Hello"  
-                    vhtml = "                                                                       \
-                    <div id='replicando' class='row  p-1 m-2 bg-info text-light'>                    \
-                      <input type='hidden' name='parent_comment' value='{{comment.id}}'>                           \
-                      <div  style='max-width:10%;'><i class='fa fa-reply'></i></div>                   \  \
-                      <div  style='max-width:80%;'>    \                                                \
-                          <span><b>Respondiendo a:&nbsp;</b> {{comment.usuario}}->{{comment.text}}</span>                \
-                      </div>                                                                              \
-                      <div  style='max-width:5%;'>x</div>                                                  \
-                    </div>    \                                                                              \
-                    ";                                                                          
-                    //primero eliminar si existe el div
-                    $("#replicando").remove();
-                    //luego agregarlo
-                      $("#comment_form").prepend(vhtml);
-                      $("#comment_form").show()
-
-                      //$("#responder_{{comment.id}}").hide();
-                 });
-                </script>
-                
-                {% endfor %}
-              </div>
-            
-          </div>
-        </div>
-      
-      
-
-      </div>
-
-    </div>
-
-
-
- 
-
   </div>
-</div>
+
+
+</div><!--Dettales de producto-->
+
+
+<p><!--Toggle de comentarios-->
+  <button class="btn btn-success mt-3" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Mostrar Comentarios
+  </button>
+</p>
+
+
+<div class="collapse" id="collapseExample">
+              
+          
+      <div id="comantarioslst" class="mb-1 border-0">
+
+
+            {% for comment in producto.get_comentarios %}
+              {% if not comment.super_comment  %}<!--Solo super_comentarios-->
+
+                  <div class="card card-body supercard"><!--Carta-->
+
+                    <div class="crespondiendo d-flex flex-row justify-content-between">
+                      <div class="bg-info rounded-circle p-2 m-2" style="">
+                        {{ comment.usuario.username|first|upper }}
+                      </div>
+
+                      <img class="rounded-circle shadow-4-strong" alt="avatar2" src="/media/avatar/IMG_20230320_202352.jpeg" />
+
+                      <div style="display: inline-block;" class="rateyo" id="showrating_{{comment.id}}_{{user_id}}" data-rating="{{comment.related_rating.stars|default_if_none:"0" }}">
+
+                      </div>    
+                      
+            
+                              <script>
+                                $(function() {
+                                    var srating_{{comment.id}}_{{user_id}} = parseFloat($("#showrating_{{comment.id}}_{{user_id}}").data("rating"));
+            
+                                    $("#showrating_{{comment.id}}_{{user_id}}").rateYo({
+                                        rating: srating_{{comment.id}}_{{user_id}},               
+                                        readOnly: true,
+                                        starWidth: "15px"
+                                    });
+                      
+                                });
+                            </script>
+            
+                        
+                      
+
+                      <!--Fin de la seccion superior: Respondiendo o estrellas-->
+                    </div>
+                  
+                    <div class="mb-0 d-flex justify-content-between content {% if comment.usuario == user %} cpropio {% else %} cotro {% endif %} ">
+                      <strong class="">{{ comment.usuario }}:</strong> 
+                      <p >{{ comment.text }}</p> 
+                      <span>  
+                        <span class="btn btn-primary" id="responder_{{comment.id}}"><i class="fa fa-reply"></i>&nbsp;Responder</span>
+                        <span class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapseComments_{{comment.id}}" aria-expanded="false" aria-controls="collapseComments_{{comment.id}}"><i class="fa fa-comment"></i></span>
+                      <span>
+                    </div>
+
+                  </div><!--card-->   
+
+                  <script>
+
+                    $("#responder_{{comment.id}}").click(function() {
+                      
+                      thtml = "Hello"  
+                      vhtml = "                                                                       \
+                      <div id='replicando' class='row  p-1 m-2 bg-info text-light'>                    \
+                        <input type='hidden' name='parent_comment' value='{{comment.id}}'>                           \
+                        <div  style='max-width:10%;'><i class='fa fa-reply'></i></div>                   \  \
+                        <div  style='max-width:80%;'>    \                                                \
+                            <span><b>Respondiendo a:&nbsp;</b> {{comment.usuario}}->{{comment.text}}</span>                \
+                        </div>                                                                              \
+                        <div  style='max-width:5%;'>x</div>                                                  \
+                      </div>    \                                                                              \
+                      ";                                                                          
+                      //primero eliminar si existe el div
+                      $("#replicando").remove();
+                      //luego agregarlo
+                        $("#comment_form").prepend(vhtml);
+                        $("#comment_form").show()
+
+                        //$("#responder_{{comment.id}}").hide();
+                    });
+                  </script>
+                  
+                  <!--SUBCOMENTARIOS-->
+                  <div id="collapseComments_{{comment.id}}" class="collapse">
+                    {% for subcomment in producto.get_comentarios %}
+                      {% if subcomment.super_comment == comment.id%}
+
+                            <div class="card card-body subcard pl-5"><!--subcarta-->
+                              <div class="crespondiendo d-flex flex-row justify-content-between">
+                                  <div class="bg-info rounded-circle p-2 m-2" style="">
+                                    {{ subcomment.usuario.username|first|upper }}
+                                  </div>
+                                  <b class="crespondiendo text-light"><p>En respuesta a <b>{{ subcomment.parent_comment.usuario }}:</b> {{ subcomment.parent_comment.text }}</p></b>
+                          
+                                <!--Fin de la seccion superior: Respondiendo o estrellas-->
+                              </div>
+                            
+                              <div class="mb-0 d-flex justify-content-between content {% if subcomment.usuario == user %} cpropio {% else %} cotro {% endif %} ">
+                                <strong class="">{{ subcomment.usuario }}:</strong> 
+                                <p >{{ subcomment.text }}</p> 
+                                <span>  
+                                  <span class="btn btn-primary" id="responder_{{subcomment.id}}"><i class="fa fa-reply"></i>&nbsp;Responder</span>
+                                  <span class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapseComments_{{subcomment.id}}" aria-expanded="false" aria-controls="collapseComments_{{subcomment.id}}"><i class="fa fa-comment"></i></span>
+                                <span>
+                              </div>
+                          
+                            
+                              <hr clas='border-0'/>
+                              
+                              <script>
+                          
+                                $("#responder_{{subcomment.id}}").click(function() {
+                                  
+                                  thtml = "Hello"  
+                                  vhtml = "                                                                       \
+                                  <div id='replicando' class='row  p-1 m-2 bg-info text-light'>                    \
+                                    <input type='hidden' name='parent_comment' value='{{subcomment.id}}'>                           \
+                                    <div  style='max-width:10%;'><i class='fa fa-reply'></i></div>                   \  \
+                                    <div  style='max-width:80%;'>    \                                                \
+                                        <span><b>Respondiendo a:&nbsp;</b> {{subcomment.usuario}}->{{subcomment.text}}</span>                \
+                                    </div>                                                                              \
+                                    <div  style='max-width:5%;'>x</div>                                                  \
+                                  </div>    \                                                                              \
+                                  ";                                                                          
+                                      
+                                  //primero eliminar si existe el div
+                                  $("#replicando").remove();
+                                  //luego agregarlo
+                                    $("#comment_form").prepend(vhtml);
+                                    $("#comment_form").show()
+                          
+                                    //$("#responder_{{subcomment.id}}").hide();
+                                 });
+                              </script>
+                              
+                            </div><!--subcard-->   
+                      
+                      {%endif%}
+                    {% endfor %}
+                    
+                  </div>
+                  <!--Fin de subcomentarios-->
+
+
+                  <hr clas='border-0'/>
+                    
+
+                    
+              {%endif%}      
+            {% endfor %}
+
+      </div><!--Fin comentarioslst-->
+    
+  
+</div><!--Collapse de Todos los comentarios-->
+    
+    
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- Modal para mostrar la imagen ampliada -->
 <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
@@ -247,102 +362,103 @@
               </button>
             </div>
           </div>
-        </form>
+        </div>
         <!--fin del formulario de comentario-->
         
         {% if user.is_authenticated %}
-        <script>
+          <script>
 
-          $(function() {
-            var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
-            
-            
-            $("#rating_{{ producto.id }}").rateYo({
-              rating: rat2,                  
-              readOnly: false,
-              starWidth: "30px",
-              fullStar: true,
-
-              onSet: function(rating,rateYoInstance){
-                rat3 = rating;
-              }
-             
+            $(function() {
+              var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
               
-            });
-
-
-            var rat3 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
-            
-            //envio del formulario del modal de calificacion
-            $("#btn_send_c").click(function() {
               
-              var com = $("#comentario2").val();
-              //alert("rating -> "+rat3+" "+com)
-              
-              $.ajax({
-                url: "{% url 'submit_rating' producto.id %}",  
-                method: "POST",
-                data: {
-                  rating: rat3,
-                  comment: com,
-                  csrfmiddlewaretoken: "{{ csrf_token }}"
-                },
-                success: function(response) {
-                  $("#rating_value_{{ producto.id }}").text("Rating: " + rat3 + "/5");
-                  $("#rating_value").text("Rating: " + rat3 + "/5");
-                  $("#showrating").rateYo("option", "rating", rat3);
-
-                  //$("#collapseExample").show();
-                  
-                  //$("#comantarioslst").append(" \
-                  $("#rating_value").append(" \
-                     <p id='nuevoc' class='bg-light text-dark'> <b>Comentario enviado:<b> " + com + " \
-                     </p>");
-                  
-                     /*
-                  $('html, body').animate({
-                          scrollTop: $("#nuevoc").offset().top
-                      }, 2000);
-                      */
-
-                  
-                  //$("#ratingModal").modal('toggle'); 
-                  
-                  $('#ratingModal').hide();
-                  $('.modal-backdrop').hide();
-                  //alert("Calificación recibida, muchas gracias!")
-                  
-                },
-                error: function(xhr, status, error) {
-                  console.log(error);
-                  $("#rating_value_{{ producto.id }}").text(error);
-                }
-                    });//ajax
-                  });//btn click envio del modal
-                  
-                });//fin del document.ready
-                
-                
-
-      </script>
-      {% endif %}
-      {% if not user.is_authenticated %}
-      <script>
-        $(function() {
-            var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
-
-            $("#rating_{{ producto.id }}").rateYo({
+              $("#rating_{{ producto.id }}").rateYo({
                 rating: rat2,                  
                 readOnly: false,
                 starWidth: "30px",
                 fullStar: true,
-                onSet: function(rating, rateYoInstance) {
-                  alert("Debe estar logueado para calificar.")
+
+                onSet: function(rating,rateYoInstance){
+                  rat3 = rating;
                 }
-            });
-        });
-    </script>
-      {% endif %}
+              
+                
+              });
+
+
+              var rat3 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
+              
+              //envio del formulario del modal de calificacion
+              $("#btn_send_c").click(function() {
+                
+                var com = $("#comentario2").val();
+                //alert("rating -> "+rat3+" "+com)
+                
+                $.ajax({
+                  url: "{% url 'submit_rating' producto.id %}",  
+                  method: "POST",
+                  data: {
+                    rating: rat3,
+                    comment: com,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                  },
+                  success: function(response) {
+                    $("#rating_value_{{ producto.id }}").text("Rating: " + rat3 + "/5");
+                    $("#rating_value").text("Rating: " + rat3 + "/5");
+                    $("#showrating").rateYo("option", "rating", rat3);
+
+                    //$("#collapseExample").show();
+                    
+                    //$("#comantarioslst").append(" \
+                    $("#rating_value").append(" \
+                      <p id='nuevoc' class='bg-light text-dark'> <b>Comentario enviado:<b> " + com + " \
+                      </p>");
+                    
+                      /*
+                    $('html, body').animate({
+                            scrollTop: $("#nuevoc").offset().top
+                        }, 2000);
+                        */
+
+                    
+                    //$("#ratingModal").modal('toggle'); 
+                    
+                    $('#ratingModal').hide();
+                    $('.modal-backdrop').hide();
+                    //alert("Calificación recibida, muchas gracias!")
+                    
+                  },
+                  error: function(xhr, status, error) {
+                    console.log(error);
+                    $("#rating_value_{{ producto.id }}").text(error);
+                  }
+                      });//ajax
+                    });//btn click envio del modal
+                    
+                  });//fin del document.ready
+                  
+                  
+
+          </script>
+        {% endif %}
+
+        {% if not user.is_authenticated %}
+        <script>
+          $(function() {
+              var rat2 = parseFloat($("#rating_{{ producto.id }}").data("rating"));
+
+              $("#rating_{{ producto.id }}").rateYo({
+                  rating: rat2,                  
+                  readOnly: false,
+                  starWidth: "30px",
+                  fullStar: true,
+                  onSet: function(rating, rateYoInstance) {
+                    alert("Debe estar logueado para calificar.")
+                  }
+              });
+          });
+        </script>
+        {% endif %}
         <!--fin rating-->
       </div>
     </div>
@@ -352,8 +468,5 @@
 
 <br>
 
-</div>
-  <!--a href="{% url 'editar_producto' producto.id %}">Editar</a>
-  <a href="{% url 'eliminar_producto' producto.id %}">Eliminar</a>
-  <a href="{% url 'listar_producto' %}">Volver a la lista de productos</a-->
+<a href="{% url 'listar_producto' %}">Volver a la lista de productos</a>
 {% endblock %}

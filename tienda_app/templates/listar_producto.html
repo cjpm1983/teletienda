@@ -24,12 +24,14 @@
   .pill {
     display:flex;
     justify-content:center;
-    max-height:48px
+    max-height:48px;
+    margin-bottom: 10px;
   }
   
   .pill-left {
     background-color: #e4e4e4;
     border-radius: 30px 0px 0px 30px;
+    
     /*color: #e4e4e4;*/
   }
 
@@ -44,6 +46,7 @@
     background-color: white;
     border-radius: 30px 0px 0px 30px;
     /*color: white;*/
+    border: 0px !important;
   }
   
   .pills-right {
@@ -59,7 +62,7 @@
 
   
   .pill-right select, .pill-left p{
-    border: 1px solid transparent;
+    border: 0px solid transparent;
     margin:0;
     background:transparent;
   }
@@ -100,28 +103,25 @@
 <main>
 
   <div class="container">
-    
+  
+  {%if mob%} <!--ES CELULAR-->
     <div id="cabecerageneral"><!--cabecera Genera-->
       <div class="container-fluid cabecerasuperior" >
-        <div class="row p-2 ">
+        <div class="d-flex justify-content-between p-2 ">
           
-          <!--img src={% static url 'shop.png' %} class="col-md-1 img-thumbnail"-->
-          <div id="navform3" class="form-inline row col-md-5 pill" >
-            <input  id="searchv" class="col-md-8 pills-left" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." >
-            
-            <button type="button" id="enviarbuscar" class="btn col-md-4 pills-right" >
-              <i class="fa fa-search"></i>
-            </button>
-          </div>
+          <img id="milogo" src="{% static 'tienda_app/img/logowhite.png' %}" width='48px' />
           
-          <h1 class="col-md-3" style="color:white;display:flex; justify-content:center;">Teletienda</h1>
+          <!--h1 class="col-md-3" style="color:white;display:flex; justify-content:center;">Instrai</h1-->
 
           <!-- Dropdown Registro-->
           {% if user.is_authenticated %}
           <div class="dropdown col-sm-1" style="">
-            <button class="btn btn-info rounded-circle pl-5 dropdown-toggle col-sm-3" type="button" id="userDropdown" data-mdb-toggle="dropdown"
-              aria-expanded="false">
-              {{ user.username|first|upper }}
+            <button class="btn rounded-circle" style="padding:0px; width:48px;"  type="button" id="userDropdown" data-mdb-toggle="dropdown" aria-expanded="false">
+              {%if request.user.userprofile.avatar%}
+                <img src="{{ request.user.userprofile.avatar.url }}" alt="avatar" class="img-fluid rounded-circle">
+              {%else%}
+                {{ user.username|first|upper }}
+              {%endif%}
             </button>
             <ul class="dropdown-menu" aria-labelledby="userDropdown">
               <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
@@ -129,19 +129,35 @@
             </ul>
           </div>
           {% else %}
-          <div class="dropdown col-sm-1" style="">
+          <div class="dropdown" style="">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
               aria-expanded="false">
-              Registro
+              Hola, identif&iacute;cate
             </button>
             <ul class="dropdown-menu" aria-labelledby="registerDropdown">
-              <li><a class="dropdown-item" href="{% url 'login' %}">Registrar</a></li>
-              <li><a class="dropdown-item" href="{% url 'register' %}">Crear cuenta</a></li>
+              <li><hr class="mt-0"/></li>
+              <li><a class="dropdown-item justify-content-center" style="font-weight:900;color:white;background-color:#494949;" href="{% url 'login' %}">Identif&iacute;cate</a></li>
+              <li><hr class="mt-0"/></li>
+              <li><a class="dropdown-item" href="{% url 'register' %}">¿Eres nuevo? <span style="color:green;">Crea tu cuenta aqu&iacute;<span></a></li>
             </ul>
           </div>
           {% endif %}
 
+
         </div>
+
+
+        <div class="d-flex justify-content-center">  
+          <!--form-inline col-md-3 pill-->
+          <div id="navform3" class="form-inline row  pill" >
+            <input  id="searchv" class="col-md-8 pills-left" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." >
+            
+            <button type="button" id="enviarbuscar" class="btn col-md-4 pills-right" >
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+
       </div>
 
       <!-- Navbar -->
@@ -161,33 +177,14 @@
           <!-- Collapsible wrapper -->
           <div class="collapse navbar-collapse" id="navbarSupportedContent2">
             
+                          <!-- Dropdown -->
 
-            <!-- Dropdown -->
-
-          
+                        
             <form id="navform" class="form-inline row " method="get" action="">
                 
               <input name="search" type="hidden" id="search" {% if search %} value="{{search}}" {% endif %} >
-              
-              <ul class="orden col-md-3" >
-                
-                <li class="nav-item">
-                  <div class="form-check form-switch">
-                  
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Precio</label>
-                    <input {% if cprecio and cprecio == "on" %}checked{% endif %} name="cprecio" class="form-check-input" type="checkbox" role="switch" id="cprecio" onchange="this.form.submit()">  
-                  </div>
-                </li>
-
-                <li class="nav-item">
-                  <div class="form-check form-switch">
-                  
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Calificaci&oacute;n</label>
-                    <input {% if ccalif and ccalif == "on" %}checked{% endif %}  name="ccalif" class="form-check-input" type="checkbox" role="switch" id="ccalif">
-                  </div>
-                </li>
-                
-              </ul>
+                      
+            
 
               <!--div class="selectores col-md-4"-->
 
@@ -245,6 +242,26 @@
                   </div>
               </div>
 
+              <ul class="orden col-md-3" >
+                      
+                <li class="nav-item">
+                  <div class="form-check form-switch">
+                  
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Precio</label>
+                    <input {% if cprecio and cprecio == "on" %}checked{% endif %} name="cprecio" class="form-check-input" type="checkbox" role="switch" id="cprecio" onchange="this.form.submit()">  
+                  </div>
+                </li>
+
+                <li class="nav-item">
+                  <div class="form-check form-switch">
+                  
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Calificaci&oacute;n</label>
+                    <input {% if ccalif and ccalif == "on" %}checked{% endif %}  name="ccalif" class="form-check-input" type="checkbox" role="switch" id="ccalif">
+                  </div>
+                </li>
+                
+              </ul>              
+
 
             </form>
 
@@ -260,6 +277,179 @@
       </nav>
     </div><!--fin de cabecera general-->
 
+  {%else%} <!--NO ES CELULAR-->
+
+  <div id="cabecerageneral"><!--cabecera Genera-->
+    <div class="container-fluid cabecerasuperior" >
+      <div class="d-flex justify-content-between p-2 ">
+        
+      <!--div class="col-md-5 d-flex justify-content-between style='align-items: flex-end;'"-->  
+          <img id="milogo" src="{% static 'tienda_app/img/logowhite.png' %}" width='48px' />
+          <!--form-inline col-md-3 pill-->
+          <div id="navform3" class="form-inline row  pill" >
+            <input  id="searchv" class="col-md-8 pills-left" {% if search %} value="{{search}}" {% endif %} class="form-control border-end-0 border " placeholder="Buscar..." >
+            
+            <button type="button" id="enviarbuscar" class="btn col-md-4 pills-right" >
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+      <!--/div-->
+
+        <!--h1 class="col-md-3" style="color:white;display:flex; justify-content:center;">Instrai</h1-->
+
+        <!-- Dropdown Registro-->
+        {% if user.is_authenticated %}
+        <div class="dropdown col-sm-1" style="">
+          <button class="btn rounded-circle" style="padding:0px; width:48px;"  type="button" id="userDropdown" data-mdb-toggle="dropdown" aria-expanded="false">
+            {%if request.user.userprofile.avatar%}
+              <img src="{{ request.user.userprofile.avatar.url }}" alt="avatar" class="img-fluid rounded-circle">
+            {%else%}
+              {{ user.username|first|upper }}
+            {%endif%}
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Editar perfil</a></li>
+            <li><a class="dropdown-item" href="{% url 'milogout' %}">Salir</a></li>
+          </ul>
+        </div>
+        {% else %}
+        <div class="dropdown" style="">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-mdb-toggle="dropdown"
+            aria-expanded="false">
+            Hola, identif&iacute;cate
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="registerDropdown">
+            <li><hr class="mt-0"/></li>
+            <li><a class="dropdown-item d-flex justify-content-center" style="font-weight:900;color:white;background-color:#494949;" href="{% url 'login' %}">Identif&iacute;cate</a></li>
+            <li><hr class="mt-0"/></li>
+            <li><a class="dropdown-item" href="{% url 'register' %}">¿Eres nuevo? <span style="color:green;">Crea tu cuenta aqu&iacute;<span></a></li>
+          </ul>
+        </div>
+        {% endif %}
+
+
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark mt-3 mb-5 shadow p-2 cabecerainferior" style="background-color:#4d4d4d;">
+      <!-- Container wrapper -->
+      <div class="container-fluid">
+        <!-- Navbar brand -->
+    
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+          data-mdb-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+          
+                        <!-- Dropdown -->
+
+                      
+          <form id="navform" class="form-inline row " method="get" action="">
+              
+            <input name="search" type="hidden" id="search" {% if search %} value="{{search}}" {% endif %} >
+                    
+          
+
+            <!--div class="selectores col-md-4"-->
+
+            <div class="pill col-md-4">
+              <div class="form-group badge pill-left "><p class="form-control">Provincia</p></div>
+              <div class="form-group badge pill-right ">
+                <select class="form-control" name="provincia" id="provincia" onchange="this.form.submit()">
+                    
+                    <option {% if not provincia %}selected=""{% endif %} value=""> Todas las Provincias </option>
+                    <option value="pinar_del_rio" {% if provincia == "pinar_del_rio" %}selected{% endif %}>Pinar del Río</option>
+                    <option value="artemisa" {% if provincia == "artemisa" %}selected{% endif %}>Artemisa</option>
+                    <option value="la_habana" {% if provincia == "la_habana" %}selected{% endif %}>La Habana</option>
+                    <option value="mayabeque" {% if provincia == "mayabeque" %}selected{% endif %}>Mayabeque</option>
+                    <option value="matanzas" {% if provincia == "matanzas" %}selected{% endif %}>Matanzas</option>
+                    <option value="cienfuegos" {% if provincia == "cienfuegos" %}selected{% endif %}>Cienfuegos</option>
+                    <option value="villa_clara" {% if provincia == "villa_clara" %}selected{% endif %}>Villa Clara</option>
+                    <option value="sancti_spiritus" {% if provincia == "sancti_spiritus" %}selected{% endif %}>Sancti Spíritus</option>
+                    <option value="ciego_de_avila" {% if provincia == "ciego_de_avila" %}selected{% endif %}>Ciego de Ávila</option>
+                    <option value="camaguey" {% if provincia == "camaguey" %}selected{% endif %}>Camagüey</option>
+                    <option value="las_tunas" {% if provincia == "las_tunas" %}selected{% endif %}>Las Tunas</option>
+                    <option value="granma" {% if provincia == "granma" %}selected{% endif %}>Granma</option>
+                    <option value="holguin" {% if provincia == "holguin" %}selected{% endif %}>Holguín</option>
+                    <option value="santiago_de_cuba" {% if provincia == "santiago_de_cuba" %}selected{% endif %}>Santiago de Cuba</option>
+                    <option value="guantanamo" {% if provincia == "guantanamo" %}selected{% endif %}>Guantánamo</option>
+                </select>
+              </div>
+          </div>
+
+
+            <div class="pill col-md-4">
+              <div class="form-group badge pill-left "><p class="form-control">Tienda</p></div>
+              <div class="form-group badge pill-right ">
+                    <select class="form-control"  name="tienda" id="tiendasSelect" onchange="this.form.submit()">
+                      <option {% if not shop %}selected=""{% endif %} value=""> Todas las tiendas </option>
+                        {% for tienda in tiendas %}
+                            <option {% if shop.nombre == tienda.nombre %}selected=""{% endif %} value="{{ tienda.nombre }}">
+                              
+                              {{tienda.nombre}}
+                              
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="pill col-md-3">
+              <div class="form-group badge pill-left "><p class="form-control">Mostrar</p></div>
+              <div class="form-group badge pill-right ">
+                    <select class="form-control" name="mostrar" id="mostrar" onchange="this.form.submit()">
+                        <option value="5" {% if mostrar == 5 %}selected{% endif %}>5</option>
+                        <option value="50" {% if mostrar == 50 %}selected{% endif %}>50</option>
+                        <option value="100" {% if mostrar == 100 %}selected{% endif %}>100</option>
+                    </select>
+                </div>
+            </div>
+
+            <ul class="orden col-md-3" >
+                    
+              <li class="nav-item">
+                <div class="form-check form-switch">
+                
+                  <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Precio</label>
+                  <input {% if cprecio and cprecio == "on" %}checked{% endif %} name="cprecio" class="form-check-input" type="checkbox" role="switch" id="cprecio" onchange="this.form.submit()">  
+                </div>
+              </li>
+
+              <li class="nav-item">
+                <div class="form-check form-switch">
+                
+                  <label class="form-check-label" for="flexSwitchCheckDefault">Mejor Calificaci&oacute;n</label>
+                  <input {% if ccalif and ccalif == "on" %}checked{% endif %}  name="ccalif" class="form-check-input" type="checkbox" role="switch" id="ccalif">
+                </div>
+              </li>
+              
+            </ul>              
+
+
+          </form>
+
+        </div><!--del Collapsible-->
+
+
+
+      </div><!--del container-fluid-->
+
+
+
+      
+    </nav>
+  </div><!--fin de cabecera general-->
+
+  {%endif%}  
+  
 
     <!-- Products -->
     <section>

@@ -111,7 +111,7 @@ class UserProfile(models.Model):
     telegram_username = models.CharField(max_length=50,blank=True)
     uri_token = models.CharField(max_length=255,blank=True)
     confirmation_token = models.CharField(max_length=255, blank=True)
-
+    avatar = ResizedImageField(size=[1000, 700], upload_to='avatars/',default='images/default.png', blank=True, null=True)
 
 class Rating(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)

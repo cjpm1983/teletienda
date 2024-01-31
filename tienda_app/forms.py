@@ -8,8 +8,8 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         #fields = '__all__'
-        fields = ['telegram_username',]# 'first_name','last_name']  
-
+        fields = ['telegram_username','avatar']# 'first_name','last_name']  
+        #fields = ['avatar']
 class TiendaForm(forms.ModelForm):
     class Meta:
         model = Tienda

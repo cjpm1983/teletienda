@@ -20,9 +20,12 @@
 
 {% block content %}
   
-  <form method="post" class="form-group d-flex flex-column justify-content-center align-items-center">
+  <form method="post" action='{{action_url}}' enctype='multipart/form-data' class="form-group d-flex flex-column justify-content-center align-items-center">
     <h2>Editar perfil</h2>
     {% csrf_token %}
+    {%if request.user.userprofile.avatar %}
+       <img src="{{ request.user.userprofile.avatar.url }}" style="margin-bottom:20px;" alt="avatar" width="100px" class="img-fluid img-thumbnail">
+    {%endif%}
     {{ form.as_p }}
     <button class="btn btn-primary" type="submit">Guardar cambios</button>
   </form>

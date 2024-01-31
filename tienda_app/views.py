@@ -1,3 +1,4 @@
+import re
 from django.urls import reverse
 from tienda_app.forms import CustomUserCreationForm, ForgotPasswordForm, ProfileForm, SetPasswordForm
 from .models import Tienda, Producto, Rating, UserProfile, Comment
@@ -143,6 +144,9 @@ def listarr_producto(request):
 
 def listar_producto(request):
     #Listar solo los productos en estado visible
+    
+    mob = mobile(request)
+    agente = request.META['HTTP_USER_AGENT']
     productos = Producto.objects.filter(visible=True)
 
     provincia = request.GET.get('provincia', None)
@@ -198,7 +202,9 @@ def listar_producto(request):
         'shop': tienda,#esta es la tienda seleccionada
         'cprecio': cprecio, 
         'ccalif': ccalif, 
-        'search': termino_busqueda
+        'search': termino_busqueda,
+        'mob': mob,
+        'agente': agente
     })
 
 def crear_producto(request):
@@ -365,7 +371,7 @@ def superc(comment):
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=request.user.userprofile)
+        form = ProfileForm(request.POST,request.FILES, instance=request.user.userprofile)
         if form.is_valid():
             form.save()
             return redirect('listar_producto')
@@ -654,3 +660,13 @@ class TiendaViewSet(viewsets.ModelViewSet):
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
+
+def mobile(request):
+    """Return True if the request comes from a mobile device."""
+
+    MOBILE_AGENT_RE=re.compile(r".*(safari|iphone|android|mobile|androidtouch)",re.IGNORECASE)
+
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False

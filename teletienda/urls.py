@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 from tienda_app.admin import TiendaAdmin
 
-admin.site.site_header = "Teletienda"
+admin.site.site_header = "INSTRAI"
 
 urlpatterns = [
     path('', include('tienda_app.urls')),
